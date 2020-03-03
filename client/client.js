@@ -18,18 +18,41 @@ form.addEventListener('submit', async function(event){
     
     results.innerHTML = body;
 
+        for(let result of results){
+            var para = document.createElement("p");
+            var node = document.createTextNode(result.title);
+            para.appendChild(node);
+            let img = document.createElement("img");
+            img.setAttribute('src', result.image);
+            img.setAttribute('alt', result.title);
+            resultsDiv.append(img);
+            resultsDiv.appendChild(para);
+        }
 
-    for(let result of results){
-        let a = document.createElement("a");
-        a.setAttribute('href', result.href);
-        
-        let img = document.createElement("img");
-        img.setAttribute('src', result.thumbnail);
-        img.setAttribute('alt', result.title);
-        a.append(img);
-        resultsDiv.append(a);
-    }
+});
 
-    /* amend page with results */
-//    alert(body);
+var all = document.getElementById('all');
+all.addEventListener('onclick', async function(event){
+    alert("Hello");
+    /*
+    event.preventDefault();
+    let response = await fetch('http://127.0.0.1:8090/all');
+    let body = await response.text();
+    let results = JSON.parse(body);
+
+    let resultsDiv = document.getElementById('search_results');
+    
+    results.innerHTML = body;
+
+        for(let result of results){
+            var para = document.createElement("p");
+            var node = document.createTextNode(result.title);
+            para.appendChild(node);
+            let img = document.createElement("img");
+            img.setAttribute('src', result.image);
+            img.setAttribute('alt', result.title);
+            resultsDiv.append(img);
+            resultsDiv.appendChild(para);
+        }
+*/
 });
