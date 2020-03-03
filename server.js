@@ -1,81 +1,54 @@
-const express = require('express')
-const app = express()
-var bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ extended: false }))
-var fs = require('fs')
+var express = require("express");
+var app = express();
 
-var posts = require('./posts.json')
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.static('client'));
+
+var fs = require('fs');
+
+var recipes = require("./recipes.json");
 
 
-app.use(express.static('client'))
 
-//allows user to upload a new post
-app.post('/newpost', function (request, response) {
-  const title = request.body.title
-  const des = request.body.des
-  const image = request.body.image
-  const newPost = {
-    title: title,
-    des: des,
-    image: image
-  }
-  posts.push(newPost)
-  const json = JSON.stringify(posts)
-  fs.writeFile('posts.json', json, 'utf8', console.log)
-  response.send('Success')
-})
+app.get("/", function (request, response){
+    response.send(recipes);
+});
 
-//displays all posts
-app.get('/all', function (req, resp) {
-  resp.send(posts)
-})
+app.post("/new", function (request, response){
+    const title = request.body.title;
+    const url = request.body.url;
+    const newRecipe = {"title": title,
+                       "href": url};
+    recipes.push(newRecipe);
+    const json = JSON.stringify(recipes);
+    fs.writeFile('recipes.json', json, 'utf8', console.log);
 
-//searches for posts
-app.get('/search', function (request, response) {
-  const keyword = request.query.keyword
-  var matching = []
-  //checks if keyword exists
-  if (keyword) {
-    //checks against titles of all posts
-    for (let i = 0; i < posts.length; i++) {
-      if (posts[i].title.toLowerCase().includes(keyword.toLowerCase())) {
-        matching.push(posts[i])
-      }
+    response.send(`Added recipe ${title} ${url}`);
+});
+
+
+app.get("/potatoes", function (request, response){
+    const key = request.query.key;
+    for(let i = 0; i<recipes.length; i++){
+        if(recipes[i].title == key){
+            response.send(recipes[i].href);
+        }
     }
-    //checks if matching post list is empty
-    if (matching && matching.length) {
-        matching=matching
-    } 
-    //if empty, return message
-    else {
-      matching = 'No Posts Found'
+});
+
+app.get("/search", function (request, response){
+    const keyword = request.query.keyword;
+    var matching = [];
+    for(let i = 0; i<recipes.length; i++){
+        if(recipes[i].title.toLowerCase().includes(keyword.toLowerCase())){
+            matching.push(recipes[i]);
+        }
     }
-  } 
-  //if no keyword found
-  else {
-    matching = 'no search term'
-  }
-  response.send(matching)
-})
-
-//allows user to create account
-app.post('/newaccount', function (request, response) {
-  const username = request.body.username
-  const password = request.body.password
-  const newAccount = {
-    username: username,
-    password: password,
-  }
-
-  console.log(newAccount)
-  
-  posts.push(newAccount)
-  const json = JSON.stringify(posts)
-  fs.writeFile('posts.json', json, 'utf8', console.log)
-  
-  response.send('Success')
-})
+    response.send(matching);
 
 
+});
 
-app.listen(8090)
+app.listen(8090);
