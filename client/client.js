@@ -1,3 +1,23 @@
+/*
+window.addEventListener("load", async function(event) {
+    event.preventDefault()
+    const response = await fetch('http://127.0.0.1:8090/all')
+    const body = await response.text()
+    const results = JSON.parse(body)
+    const resultsDiv = document.getElementById('search_results')
+    results.innerHTML = body
+    for (const result of results) {
+      var para = document.createElement('p')
+      var node = document.createTextNode(result.des)
+      para.appendChild(node)
+      const img = document.createElement('img')
+      img.setAttribute('src', result.image)
+      img.setAttribute('alt', result.title)
+      resultsDiv.append(img)
+      resultsDiv.appendChild(para)
+    }
+  })
+*/
 // Search
 var upload = document.getElementById('upload')
 upload.addEventListener('click', async function (event) {
@@ -32,8 +52,6 @@ upload.addEventListener('click', async function (event) {
         form.append(button)
         uploadDiv.appendChild(title)
         uploadDiv.append(form)
-        
-
       })
 // Search
 var form = document.getElementById('search_form')
@@ -47,14 +65,41 @@ form.addEventListener('submit', async function (event) {
   results.innerHTML = body
 
   for (const result of results) {
-    const para = document.createElement('p')
-    const node = document.createTextNode(result.des)
-    para.appendChild(node)
+    const div1=document.createElement('div')
+    div1.setAttribute("class","col-md-4")
+    const div2=document.createElement('div')
+    div2.setAttribute("class","card mb-4 box-shadow")
     const img = document.createElement('img')
     img.setAttribute('src', result.image)
     img.setAttribute('alt', result.title)
-    resultsDiv.append(img)
-    resultsDiv.appendChild(para)
+    const div3=document.createElement('div')
+    div3.setAttribute("class","card body")
+    const para = document.createElement('p')
+    const node = document.createTextNode(result.des)
+    para.appendChild(node)
+    const div4=document.createElement('div')
+    div4.setAttribute("class","d-flex justify-content-between align-items-center")
+    const div5=document.createElement('div')
+    div5.setAttribute("class","btn_group")
+    const bt1=document.createElement('button')
+    bt1.innerHTML='View Post'
+    bt1.setAttribute("class","btn btn-sm btn-outline-secondary")
+    const bt2=document.createElement('button')
+    bt2.innerHTML='Comment'
+    bt2.setAttribute("class","btn btn-sm btn-outline-secondary")
+    const bt3=document.createElement('button')
+    bt3.innerHTML='Delete Post'
+    bt3.setAttribute("class","btn btn-sm btn-outline-secondary")
+    resultsDiv.appendChild(div1)
+    div1.append(div2)
+    div2.append(img)
+    div2.append(div3)
+    div3.append(para)
+    div3.append(div4)
+    div4.append(div5)
+    div5.append(bt1)
+    div5.append(bt2)
+    div5.append(bt3)
   }
 })
 //Generate all
@@ -64,19 +109,45 @@ all.addEventListener('click', async function (event) {
   const response = await fetch('http://127.0.0.1:8090/all')
   const body = await response.text()
   const results = JSON.parse(body)
-
   const resultsDiv = document.getElementById('search_results')
-
   results.innerHTML = body
-
+  var count=0
   for (const result of results) {
-    var para = document.createElement('p')
-    var node = document.createTextNode(result.des)
-    para.appendChild(node)
+    count=count+1
+    const div1=document.createElement('div')
+    div1.setAttribute("class","col-md-4")
+    const div2=document.createElement('div')
+    div2.setAttribute("class","card mb-4 box-shadow")
     const img = document.createElement('img')
     img.setAttribute('src', result.image)
     img.setAttribute('alt', result.title)
-    resultsDiv.append(img)
-    resultsDiv.appendChild(para)
+    const div3=document.createElement('div')
+    div3.setAttribute("class","card body")
+    const para = document.createElement('p')
+    const node = document.createTextNode(result.des)
+    para.appendChild(node)
+    const div4=document.createElement('div')
+    div4.setAttribute("class","d-flex justify-content-between align-items-center")
+    const div5=document.createElement('div')
+    div5.setAttribute("class","btn_group")
+    const bt1=document.createElement('button')
+    bt1.innerHTML='View Post'
+    bt1.setAttribute("class","btn btn-sm btn-outline-secondary")
+    const bt2=document.createElement('button')
+    bt2.innerHTML='Comment'
+    bt2.setAttribute("class","btn btn-sm btn-outline-secondary")
+    const bt3=document.createElement('button')
+    bt3.innerHTML='Delete Post'
+    bt3.setAttribute("class","btn btn-sm btn-outline-secondary")
+    resultsDiv.append(div1)
+    div1.append(div2)
+    div2.append(img)
+    div2.append(div3)
+    div3.append(para)
+    div3.append(div4)
+    div4.append(div5)
+    div5.append(bt1)
+    div5.append(bt2)
+    div5.append(bt3)
   }
 })
