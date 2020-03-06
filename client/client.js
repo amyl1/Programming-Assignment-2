@@ -8,10 +8,10 @@ function viewpost (title) {
   clearAll()
 }
 function comment (title) {
-  console.log(title)
+  clearAll()
 }
 function deletepost (title) {
-  console.log(title)
+  clearAll()
 }
 function genAlbum (results) {
   clearAll()
@@ -135,3 +135,4 @@ upload.addEventListener('click', async function (event) {
   uploadDiv.appendChild(title)
   uploadDiv.append(form)
 })
+var upload_completed

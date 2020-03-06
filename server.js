@@ -16,7 +16,8 @@ app.post('/newpost', function (request, response) {
   const newPost = {
     title: title,
     des: des,
-    image: image
+    image: image,
+    comments: ""
   }
   posts.push(newPost)
   const json = JSON.stringify(posts)
