@@ -1,8 +1,8 @@
-function clearAll(){
+function clearAll () {
   const resultsDiv = document.getElementById('search_results')
-  resultsDiv.innerHTML=""
-  const upload=document.getElementById('upload_div')
-  upload.innerHTML=""
+  resultsDiv.innerHTML = ''
+  const upload = document.getElementById('upload_div')
+  upload.innerHTML = ''
 }
 function viewpost (title) {
   clearAll()
@@ -111,6 +111,7 @@ upload.addEventListener('click', async function (event) {
   const form = document.createElement('form')
   form.setAttribute('action', 'http://127.0.0.1:8090/newpost')
   form.setAttribute('method', 'post')
+  form.setAttribute('id', 'newupload')
   const in1 = document.createElement('input')
   in1.setAttribute('name', 'title')
   in1.setAttribute('type', 'text')
@@ -134,5 +135,12 @@ upload.addEventListener('click', async function (event) {
   form.append(button)
   uploadDiv.appendChild(title)
   uploadDiv.append(form)
+  event.preventDefault()
+  const uploadForm = document.getElementById('newupload')
+  uploadForm.addEventListener('submit', async function (event) {
+    event.preventDefault()
+    clearAll()
+    const successDiv = document.getElementById('success_div')
+    successDiv.innerHTML = 'Post Successful'
+  })
 })
-var upload_completed

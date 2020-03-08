@@ -7,7 +7,6 @@ var fs = require('fs')
 var posts = require('./posts.json')
 
 app.use(express.static('client'))
-
 // allows user to upload a new post
 app.post('/newpost', function (request, response) {
   const title = request.body.title
@@ -17,7 +16,7 @@ app.post('/newpost', function (request, response) {
     title: title,
     des: des,
     image: image,
-    comments: ""
+    comments: ''
   }
   posts.push(newPost)
   const json = JSON.stringify(posts)
