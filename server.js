@@ -5,6 +5,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 var fs = require('fs')
 
 var posts = require('./posts.json')
+var accounts = require('./accounts.json')
 
 app.use(express.static('client'))
 // allows user to upload a new post
@@ -28,7 +29,12 @@ app.post('/newpost', function (request, response) {
 app.get('/all', function (req, resp) {
   resp.send(posts)
 })
-
+app.get('/accounts', function (req, resp) {
+  resp.send(accounts)
+})
+app.get('/user', function (req, resp) {
+  resp.send(accounts)
+})
 // searches for posts
 app.get('/search', function (request, response) {
   const keyword = request.query.keyword

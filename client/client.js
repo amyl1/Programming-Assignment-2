@@ -6,6 +6,8 @@ function clearAll () {
 }
 function viewpost (title) {
   clearAll()
+  const resultsDiv = document.getElementById('search_results')
+  resultsDiv.innerHTML = title
 }
 function comment (title) {
   clearAll()
@@ -16,9 +18,7 @@ function deletepost (title) {
 function genAlbum (results) {
   clearAll()
   const resultsDiv = document.getElementById('search_results')
-  var count = 0
   for (const result of results) {
-    count = count + 1
     const div1 = document.createElement('div')
     div1.setAttribute('class', 'col-md-4')
     const div2 = document.createElement('div')
@@ -71,12 +71,19 @@ function genAlbum (results) {
 
 // when loaded, show all posts
 window.addEventListener('load', async function (event) {
-  event.preventDefault()
-  const response = await fetch('http://127.0.0.1:8090/all')
+  const list=document.getElementById('account_list')
+  const response = await fetch('http://127.0.0.1:8090/accounts')
   const body = await response.text()
   const results = JSON.parse(body)
   results.innerHTML = body
-  genAlbum(results)
+  for (const result of results) {
+    item=document.createElement('li')
+    link=document.createElement('a')
+    link.setAttribute('href','http://127.0.0.1:8090/user?username=' + result.title)
+    link.innerHTML=result.title
+    item.append(link)
+    list.append(item)
+  }
 })
 // Search
 var form = document.getElementById('search_form')
@@ -143,4 +150,14 @@ upload.addEventListener('click', async function (event) {
     const successDiv = document.getElementById('success_div')
     successDiv.innerHTML = 'Post Successful'
   })
+})
+
+var home = document.getElementById('home')
+home.addEventListener('click', async function (event) {
+  event.preventDefault()
+  const response = await fetch('http://127.0.0.1:8090/all')
+  const body = await response.text()
+  const results = JSON.parse(body)
+  results.innerHTML = body
+  genAlbum(results)
 })
