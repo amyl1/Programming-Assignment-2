@@ -25,6 +25,15 @@ app.post('/newpost', function (request, response) {
   response.send('Success')
 })
 
+app.post('/newaccount', function (request, response) {
+  const user = request.body.User
+  accounts.push({ User: user })
+  console.log(accounts)
+  const json = JSON.stringify(accounts)
+  fs.writeFile('accounts.json', json, 'utf8', console.log)
+  response.send('Success')
+})
+
 // displays all posts
 app.get('/all', function (req, resp) {
   resp.send(posts)

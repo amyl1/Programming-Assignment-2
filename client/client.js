@@ -3,6 +3,10 @@ function clearAll () {
   resultsDiv.innerHTML = ''
   const upload = document.getElementById('upload_div')
   upload.innerHTML = ''
+  const list = document.getElementById('account_list')
+  list.innerHTML = ''
+  const successDiv = document.getElementById('success_div')
+  successDiv.innerHTML = ''
 }
 function viewpost (title) {
   clearAll()
@@ -71,18 +75,56 @@ function genAlbum (results) {
 
 // when loaded, show all posts
 window.addEventListener('load', async function (event) {
-  const list=document.getElementById('account_list')
+  const list = document.getElementById('account_list')
   const response = await fetch('http://127.0.0.1:8090/accounts')
   const body = await response.text()
   const results = JSON.parse(body)
   results.innerHTML = body
   for (const result of results) {
-    item=document.createElement('li')
-    link=document.createElement('a')
-    link.setAttribute('href','http://127.0.0.1:8090/user?username=' + result.title)
-    link.innerHTML=result.title
+    const item = document.createElement('li')
+    const link = document.createElement('a')
+    link.setAttribute('href', 'http://127.0.0.1:8090/user?username=' + result.title)
+    link.innerHTML = result.User
     item.append(link)
     list.append(item)
+  }
+  const button = document.createElement('button')
+  button.innerHTML = 'Create New Account'
+  button.setAttribute('id', 'new_account')
+  list.append(button)
+  button.onclick = function () {
+    event.preventDefault()
+    clearAll()
+    const uploadDiv = document.getElementById('upload_div')
+    const title = document.createElement('h2')
+    const node = document.createTextNode('Create New Account')
+    title.appendChild(node)
+    const form = document.createElement('form')
+    form.setAttribute('action', 'http://127.0.0.1:8090/newaccount')
+    form.setAttribute('method', 'post')
+    form.setAttribute('id', 'newaccount')
+    const button = document.createElement('button')
+    button.innerHTML = 'Create Account'
+    const in1 = document.createElement('input')
+    in1.setAttribute('id', 'User')
+    in1.setAttribute('name', 'User')
+    in1.setAttribute('type', 'text')
+    in1.setAttribute('placeholder', 'Enter Your Username')
+    in1.setAttribute('class', 'form-control')
+    form.append(in1)
+    form.append(button)
+    uploadDiv.appendChild(title)
+    uploadDiv.append(form)
+    const newAccount = document.getElementById('newaccount')
+    newAccount.addEventListener('submit', async function (event) {
+      const response = await fetch('http://127.0.0.1:8090/newaccount')// needed
+      console.log(response)
+      // doesnt work
+      const successDiv = document.getElementById('success_div')
+      successDiv.innerHTML = 'Post Successful'
+      clearAll()
+      event.preventDefault()
+    })
   }
 })
 // Search
@@ -121,16 +163,19 @@ upload.addEventListener('click', async function (event) {
   form.setAttribute('id', 'newupload')
   const in1 = document.createElement('input')
   in1.setAttribute('name', 'title')
+  in1.setAttribute('id', 'title')
   in1.setAttribute('type', 'text')
   in1.setAttribute('placeholder', 'Post Title')
   in1.setAttribute('class', 'form-control')
   const in2 = document.createElement('input')
   in2.setAttribute('name', 'Description')
+  in2.setAttribute('id', 'des')
   in2.setAttribute('type', 'text')
   in2.setAttribute('placeholder', 'Enter a Description')
   in2.setAttribute('class', 'form-control')
   const in3 = document.createElement('input')
   in3.setAttribute('name', 'image')
+  in3.setAttribute('id', 'image')
   in3.setAttribute('type', 'text')
   in3.setAttribute('placeholder', 'Image URL')
   in3.setAttribute('class', 'form-control')
@@ -142,14 +187,12 @@ upload.addEventListener('click', async function (event) {
   form.append(button)
   uploadDiv.appendChild(title)
   uploadDiv.append(form)
-  event.preventDefault()
   const uploadForm = document.getElementById('newupload')
   uploadForm.addEventListener('submit', async function (event) {
-    event.preventDefault()
-    clearAll()
-    const successDiv = document.getElementById('success_div')
-    successDiv.innerHTML = 'Post Successful'
+    const response = await fetch('http://127.0.0.1:8090/newpost')
   })
+  const successDiv = document.getElementById('success_div')
+  successDiv.innerHTML = 'Post Successful'
 })
 
 var home = document.getElementById('home')
