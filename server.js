@@ -11,14 +11,14 @@ app.use(express.static('client'))
 // allows user to upload a new post
 app.post('/newpost', function (request, response) {
   const title = request.body.title
-  const des = request.body.des
   const image = request.body.image
+  console.log(image)
   const newPost = {
     title: title,
-    des: des,
     image: image,
     comments: ''
   }
+  console.log(newPost)
   posts.push(newPost)
   const json = JSON.stringify(posts)
   fs.writeFile('posts.json', json, 'utf8', console.log)
