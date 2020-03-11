@@ -12,13 +12,11 @@ app.use(express.static('client'))
 app.post('/newpost', function (request, response) {
   const title = request.body.title
   const image = request.body.image
-  console.log(image)
   const newPost = {
     title: title,
     image: image,
-    comments: ''
+    comments: []
   }
-  console.log(newPost)
   posts.push(newPost)
   const json = JSON.stringify(posts)
   fs.writeFile('posts.json', json, 'utf8', console.log)

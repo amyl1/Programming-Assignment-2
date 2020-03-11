@@ -19,6 +19,7 @@ function comment (title) {
 function deletepost (title) {
   clearAll()
 }
+// creates items for each post in posts.json
 function genAlbum (results) {
   clearAll()
   const resultsDiv = document.getElementById('search_results')
@@ -29,7 +30,7 @@ function genAlbum (results) {
     img.setAttribute('src', result.image)
     img.setAttribute('alt', result.title)
     const para = document.createElement('p')
-    const node = document.createTextNode(result.description)
+    const node = document.createTextNode(result.title)
     para.appendChild(node)
     const bt1 = document.createElement('button')
     bt1.innerHTML = 'View Post'
@@ -52,16 +53,23 @@ function genAlbum (results) {
       var title = bt3.id
       deletepost(title)
     }
-    resultsDiv.append(div1)
     div1.append(img)
     div1.append(para)
     div1.append(bt1)
     div1.append(bt2)
     div1.append(bt3)
+    const comments=result.comments
+    for (const comment in comments){
+      const p = document.createElement('p')
+      const node = document.createTextNode(comments[comment])
+      p.append(node)
+      div1.append(p)
+    }
+    resultsDiv.append(div1)
   }
 }
 
-// when loaded, show all posts
+// when loaded, show accounts and allow user to create new account
 window.addEventListener('load', async function (event) {
   const list = document.getElementById('account_list')
   const response = await fetch('http://127.0.0.1:8090/accounts')
@@ -106,7 +114,6 @@ window.addEventListener('load', async function (event) {
     const newAccount = document.getElementById('newaccount')
     newAccount.addEventListener('submit', async function (event) {
       const response = await fetch('http://127.0.0.1:8090/newaccount')// needed
-      console.log(response)
       // doesnt work
       const successDiv = document.getElementById('success_div')
       successDiv.innerHTML = 'Post Successful'
@@ -137,6 +144,8 @@ all.addEventListener('click', async function (event) {
   results.innerHTML = body
   genAlbum(results)
 })
+
+// upload new post
 var upload = document.getElementById('upload')
 upload.addEventListener('click', async function (event) {
   event.preventDefault()
@@ -176,6 +185,7 @@ upload.addEventListener('click', async function (event) {
   successDiv.innerHTML = 'Post Successful'
 })
 
+// when home is clicked, display all posts
 var home = document.getElementById('home')
 home.addEventListener('click', async function (event) {
   event.preventDefault()
