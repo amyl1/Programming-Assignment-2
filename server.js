@@ -3,7 +3,6 @@ const app = express()
 var bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 var fs = require('fs')
-
 var posts = require('./posts.json')
 var accounts = require('./accounts.json')
 

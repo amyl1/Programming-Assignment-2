@@ -3,8 +3,8 @@ function clearAll () {
   resultsDiv.innerHTML = ''
   const upload = document.getElementById('upload_div')
   upload.innerHTML = ''
-  const list = document.getElementById('account_list')
-  list.innerHTML = ''
+  const intro = document.getElementById('intro')
+  intro.innerHTML = ''
   const successDiv = document.getElementById('success_div')
   successDiv.innerHTML = ''
 }
@@ -71,7 +71,14 @@ function genAlbum (results) {
 
 // when loaded, show accounts and allow user to create new account
 window.addEventListener('load', async function (event) {
-  const list = document.getElementById('account_list')
+  const div=document.getElementById('intro')
+  const div2=document.createElement('div')
+  div2.setAttribute('class','jumbotron')
+  const heading=document.createElement('h2')
+  heading.innerHTML='A website to store and share photos from your travels.'
+  const para=document.createElement('p')
+  para.innerHTML='Select a profile or create a new one to get started'
+  const list = document.createElement('ul')
   const response = await fetch('http://127.0.0.1:8090/accounts')
   const body = await response.text()
   const results = JSON.parse(body)
@@ -84,6 +91,10 @@ window.addEventListener('load', async function (event) {
     item.append(link)
     list.append(item)
   }
+  div.append(div2)
+  div2.append(heading)
+  div2.append(para)
+  div.append(list)
   const button = document.createElement('button')
   button.innerHTML = 'Create New Account'
   button.setAttribute('id', 'new_account')
