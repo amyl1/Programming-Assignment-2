@@ -43,25 +43,16 @@ app.get('/user', function (req, resp) {
 })
 // searches for posts
 app.get('/search', function (request, response) {
-  const keyword = request.query.keyword
-  var matching = []
-  // checks if keyword exists
-  if (keyword) {
-    // checks against titles of all posts
-    for (let i = 0; i < posts.length; i++) {
-      if (posts[i].title.toLowerCase().includes(keyword.toLowerCase())) {
-        matching.push(posts[i])
-      }
+    const keyword = request.query.keyword;
+    var matching = [];
+      for(let i = 0; i<posts.length; i++){
+        if(posts[i].title.toLowerCase().includes(keyword.toLowerCase())){
+            matching.push(posts[i]);
+        }
     }
-    // checks if matching post list is empty
-    if (matching && matching.length) {
-      console.log('List Found')
-    } else {
-      matching = 'No Posts Found'
-    }
-  } else {
-    matching = 'no search term'
-  }
-  response.send(matching)
-})
+    response.send(matching);
+
+
+});
+
 module.exports = app
