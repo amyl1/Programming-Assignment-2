@@ -151,29 +151,26 @@ searchForm.addEventListener('submit', async function (event) {
     event.preventDefault()
     clearAll()
     const keyword = document.getElementById('search_keyword').value
-    if (keyword){
-    const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword)
-    const body = await response.text()
-    const results = JSON.parse(body)
-    results.innerHTML = body
-    console.log(results.length)
-    if (results === undefined ||results.length == 0){
+    if (keyword) {
+      const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword)
+      const body = await response.text()
+      const results = JSON.parse(body)
+      results.innerHTML = body
+      console.log(results.length)
+      if (results === undefined || results.length === 0) {
+        const resultsDiv = document.getElementById('search_results')
+        const message = document.createElement('p')
+        message.innerHTML = 'No matching posts'
+        resultsDiv.append(message)
+      } else {
+        genAlbum(results)
+      }
+    } else {
       const resultsDiv = document.getElementById('search_results')
-      const message = document.createElement("p")
-      message.innerHTML="No matching posts"
+      const message = document.createElement('p')
+      message.innerHTML = 'No search term entered'
       resultsDiv.append(message)
     }
-    else{
-      genAlbum(results)
-    }
-    }
-    else{
-      const resultsDiv = document.getElementById('search_results')
-      const message = document.createElement("p")
-      message.innerHTML="No search term entered"
-      resultsDiv.append(message)
-    }
-    
   } catch (error) {
     handleError(error)
   }
