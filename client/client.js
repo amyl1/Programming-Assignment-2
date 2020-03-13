@@ -1,6 +1,9 @@
 function handleError (error) {
   alert(error)
 }
+function login(name){
+  alert("Name")
+}
 function clearAll () {
   const resultsDiv = document.getElementById('search_results')
   resultsDiv.innerHTML = ''
@@ -86,27 +89,30 @@ window.addEventListener('load', async function (event) {
     heading.innerHTML = 'A website to store and share photos from your travels.'
     const para = document.createElement('p')
     para.innerHTML = 'Select a profile or create a new one to get started'
-    const list = document.createElement('ul')
     const response = await fetch('http://127.0.0.1:8090/accounts')
     const body = await response.text()
     const results = JSON.parse(body)
     results.innerHTML = body
+    const div3 = document.createElement('div')
     for (const result of results) {
-      const item = document.createElement('li')
-      const link = document.createElement('a')
-      link.setAttribute('href', 'http://127.0.0.1:8090/user?username=' + result.title)
-      link.innerHTML = result.User
-      item.append(link)
-      list.append(item)
+      const item = document.createElement('p')
+      item.setAttribute('id',result.User)
+      item.innerHTML = result.User
+      item.onclick=function(){
+          var name=item.id
+          login(name)
+      }
+      div3.append(item)
     }
-    div.append(div2)
+    
     div2.append(heading)
     div2.append(para)
-    div.append(list)
+    div2.append(div3)
+    div.append(div2)
     const button = document.createElement('button')
     button.innerHTML = 'Create New Account'
     button.setAttribute('id', 'new_account')
-    list.append(button)
+    div2.append(button)
     button.onclick = function () {
       event.preventDefault()
       clearAll()
@@ -139,6 +145,7 @@ window.addEventListener('load', async function (event) {
         clearAll()
         event.preventDefault()
       })
+      
     }
   } catch (error) {
     handleError(error)
