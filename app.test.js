@@ -14,3 +14,15 @@ describe('Test all functionality', () => {
 	    .expect('Content-type', /json/);
     })
 });
+describe('Test search functionality', () => {
+    test('GET / search succeeds', () => {
+        return request(app)
+	    .get('/search?keyword=')
+	    .expect(200);
+    })
+    test('GET /search returns JSON', () => {
+        return request(app)
+	    .get('/search?keyword=')
+	    .expect('Content-type', /json/);
+    })
+});
