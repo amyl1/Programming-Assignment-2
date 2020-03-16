@@ -24,7 +24,8 @@ app.post('/newpost', function (request, response) {
 
 app.post('/newaccount', function (request, response) {
   const user = request.body.User
-  accounts.push({ User: user })
+  const pic = request.body.pic
+  accounts.push({ User: user, pic:pic })
   console.log(accounts)
   const json = JSON.stringify(accounts)
   fs.writeFile('accounts.json', json, 'utf8', console.log)

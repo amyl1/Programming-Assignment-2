@@ -1,8 +1,8 @@
 function handleError (error) {
   alert(error)
 }
-function login(name){
-  alert("Name")
+function login (name) {
+  alert('Name')
 }
 function clearAll () {
   const resultsDiv = document.getElementById('search_results')
@@ -82,37 +82,35 @@ function genAlbum (results) {
 // when loaded, show accounts and allow user to create new account
 window.addEventListener('load', async function (event) {
   try {
-    const div = document.getElementById('intro')
-    const div2 = document.createElement('div')
-    div2.setAttribute('class', 'jumbotron')
-    const heading = document.createElement('h2')
-    heading.innerHTML = 'A website to store and share photos from your travels.'
-    const para = document.createElement('p')
-    para.innerHTML = 'Select a profile or create a new one to get started'
     const response = await fetch('http://127.0.0.1:8090/accounts')
     const body = await response.text()
     const results = JSON.parse(body)
     results.innerHTML = body
-    const div3 = document.createElement('div')
+    const div = document.getElementById('intro')
+
     for (const result of results) {
+      const div4 = document.createElement('div')
+      div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'")
       const item = document.createElement('p')
-      item.setAttribute('id',result.User)
+      const image = document.createElement('img')
+      item.setAttribute('id', result.User)
       item.innerHTML = result.User
-      item.onclick=function(){
-          var name=item.id
-          login(name)
+      image.setAttribute('src', result.pic)
+      image.setAttribute('height', '100px')
+      image.setAttribute('width', '100px')
+      div4.append(image)
+      div4.append(item)
+      div4.onclick = function () {
+        var name = item.id
+        login(name)
       }
-      div3.append(item)
+      div.append(div4)
     }
-    
-    div2.append(heading)
-    div2.append(para)
-    div2.append(div3)
-    div.append(div2)
+
     const button = document.createElement('button')
     button.innerHTML = 'Create New Account'
     button.setAttribute('id', 'new_account')
-    div2.append(button)
+    div.append(button)
     button.onclick = function () {
       event.preventDefault()
       clearAll()
@@ -132,7 +130,17 @@ window.addEventListener('load', async function (event) {
       in1.setAttribute('type', 'text')
       in1.setAttribute('placeholder', 'Enter Your Username')
       in1.setAttribute('class', 'form-control')
+      const in2 = document.createElement('input')
+      in2.setAttribute('id', 'pic')
+      in2.setAttribute('name', 'pic')
+      in2.setAttribute('type', 'text')
+      in2.setAttribute('placeholder', 'URL for your profile picture')
+      in2.setAttribute('class', 'form-control')
+      const but2 = document.createElement('input')
+      but2.innerHTML = 'Submit'
+      but2.setAttribute('type', 'submit')
       form.append(in1)
+      form.append(in2)
       form.append(button)
       uploadDiv.appendChild(title)
       uploadDiv.append(form)
@@ -145,7 +153,6 @@ window.addEventListener('load', async function (event) {
         clearAll()
         event.preventDefault()
       })
-      
     }
   } catch (error) {
     handleError(error)
