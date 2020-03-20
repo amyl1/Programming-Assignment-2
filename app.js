@@ -21,14 +21,40 @@ app.post('/newpost', function (request, response) {
   fs.writeFile('posts.json', json, 'utf8', console.log)
   response.send('Success')
 })
-
+app.get('/pic', function (request, response) {
+  const name = request.query.name
+  for (let i = 0; i < accounts.length; i++) {
+    if (accounts[i].User === name) {
+      const pic = accounts[i].pic
+      response.send(pic)
+    }
+  }
+})
+app.get('/post', function (request, response) {
+  const title = request.query.title
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].title === title) {
+      response.send(posts[i])
+    }
+  }
+})
 app.post('/newaccount', function (request, response) {
   const user = request.body.User
   const pic = request.body.pic
-  accounts.push({ User: user, pic:pic })
+  accounts.push({ User: user, pic: pic })
+  const json = JSON.stringify(accounts)
+  fs.writeFile('accounts.json', json, 'utf8', console.log)
+  response.send('Success')
+})
+app.post('/comment', function (request, response) {
+  const comment = request.body.Comment
+  console.log(comment)
+  /*
+  post=posts.push({ User: user, pic: pic })
   console.log(accounts)
   const json = JSON.stringify(accounts)
   fs.writeFile('accounts.json', json, 'utf8', console.log)
+  */
   response.send('Success')
 })
 
@@ -44,16 +70,14 @@ app.get('/user', function (req, resp) {
 })
 // searches for posts
 app.get('/search', function (request, response) {
-    const keyword = request.query.keyword;
-    var matching = [];
-      for(let i = 0; i<posts.length; i++){
-        if(posts[i].title.toLowerCase().includes(keyword.toLowerCase())){
-            matching.push(posts[i]);
-        }
+  const keyword = request.query.keyword
+  var matching = []
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].title.toLowerCase().includes(keyword.toLowerCase())) {
+      matching.push(posts[i])
     }
-    response.send(matching);
-
-
-});
+  }
+  response.send(matching)
+})
 
 module.exports = app
