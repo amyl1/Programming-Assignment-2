@@ -30,6 +30,7 @@ app.get('/pic', function (request, response) {
     }
   }
 })
+
 app.get('/post', function (request, response) {
   const title = request.query.title
   for (let i = 0; i < posts.length; i++) {
