@@ -90,18 +90,21 @@ async function userlogin () {
       const response = await fetch('http://127.0.0.1:8090/newaccount')// needed
       // doesnt work
       const successDiv = document.getElementById('success_div')
-      successDiv.innerHTML = 'Post Successful'
+      successDiv.innerHTML = 'Account Created'
       clearAll()
       event.preventDefault()
     })
   }
   async function login (name) {
     const login = document.getElementById('user')
-    const pic = document.getElementById('user_pic')
-    login.innerHTML = 'Current User: ' + name
+    const pic = document.createElement("img")
     const response = await fetch('http://127.0.0.1:8090/pic?name=' + name)
     const body = await response.text()
     pic.setAttribute('src', body)
+    pic.setAttribute('height',40)
+    login.append(pic)
+    const namediv=document.getElementById("name")
+    namediv.innerHTML=name
     clearAll()
     const response2 = await fetch('http://127.0.0.1:8090/all')
     const body2 = await response2.text()
