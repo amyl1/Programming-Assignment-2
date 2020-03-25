@@ -3,6 +3,7 @@ const app = express()
 var bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 var fs = require('fs')
+var formidable = require('formidable')
 var posts = require('./posts.json')
 var accounts = require('./accounts.json')
 
@@ -80,5 +81,26 @@ app.get('/search', function (request, response) {
   }
   response.send(matching)
 })
-
+app.post('/fileupload', (req, res) => {
+  new formidable.IncomingForm().parse(req)
+    .on('fileBegin', (name, file) => {
+      file.path = __dirname + '/uploads/' + file.name
+    })
+    .on('field', (name, field) => {
+      console.log('Field', name, field)
+    })
+    .on('file', (name, file) => {
+      console.log('Uploaded file', name, file)
+    })
+    .on('aborted', () => {
+      console.error('Request aborted by the user')
+    })
+    .on('error', (err) => {
+      console.error('Error', err)
+      throw err
+    })
+    .on('end', () => {
+      res.end()
+    })
+})
 module.exports = app

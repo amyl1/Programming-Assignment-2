@@ -97,14 +97,14 @@ async function userlogin () {
   }
   async function login (name) {
     const login = document.getElementById('user')
-    const pic = document.createElement("img")
+    const pic = document.createElement('img')
     const response = await fetch('http://127.0.0.1:8090/pic?name=' + name)
     const body = await response.text()
     pic.setAttribute('src', body)
-    pic.setAttribute('height',40)
+    pic.setAttribute('height', 40)
     login.append(pic)
-    const namediv=document.getElementById("name")
-    namediv.innerHTML=name
+    const namediv = document.getElementById('name')
+    namediv.innerHTML = name
     clearAll()
     const response2 = await fetch('http://127.0.0.1:8090/all')
     const body2 = await response2.text()
