@@ -1,4 +1,4 @@
-// complete this
+//complete this
 function handleError (error) {
   alert(error)
 }
@@ -322,12 +322,8 @@ upload.addEventListener('click', async function (event) {
     clearAll()
     const uploadDiv = document.getElementById('upload_div')
     const title = document.createElement('h2')
-    const node = document.createTextNode('Upload New Post')
-    title.appendChild(node)
-    const form = document.createElement('form')
-    form.setAttribute('action', 'http://127.0.0.1:8090/newpost')
-    form.setAttribute('method', 'post')
-    form.setAttribute('id', 'newupload')
+    title.innerHTML="New Post"
+    const form = document.getElementById('form')
     const in1 = document.createElement('input')
     in1.setAttribute('name', 'title')
     in1.setAttribute('id', 'title')
@@ -337,27 +333,28 @@ upload.addEventListener('click', async function (event) {
     const label1 = document.createElement('label')
     label1.setAttribute('for', 'title')
     label1.innerHTML = 'Post Title:'
-    const in2 = document.createElement('input')
-    in2.setAttribute('name', 'image')
-    in2.setAttribute('id', 'image')
-    in2.setAttribute('type', 'text')
-    in2.setAttribute('placeholder', 'Image URL')
-    in2.setAttribute('class', 'form-control')
+    const in2=document.createElement("input")
+    in2.setAttribute("type","file")
+    in2.setAttribute("name","filetoupload")
     const label2 = document.createElement('label')
-    label2.setAttribute('for', 'image')
-    label2.innerHTML = 'The URL of your image:'
-    const button = document.createElement('button')
-    button.innerHTML = 'Post'
+    label2.setAttribute('for', 'filetoupload')
+    label2.innerHTML = 'Select a file from your computer:'
+    const in3 = document.createElement('input')
+    in3.setAttribute('type','submit')
     form.append(label1)
     form.append(in1)
     form.append(label2)
     form.append(in2)
-    form.append(button)
-    uploadDiv.appendChild(title)
-    uploadDiv.append(form)
-    const uploadForm = document.getElementById('newupload')
-    uploadForm.addEventListener('submit', async function (event) {
-      const response = await fetch('http://127.0.0.1:8090/newpost')
+    form.append(in3)
+    uploadDiv.append(title)
+    form.addEventListener('submit', async function (event) {
+      //fix event prevent
+      
+      const response=await fetch('http://127.0.0.1:8090/fileupload')
+      event.preventDefault()
+      clearAll()
+      
+      console.log(response)
       const successDiv = document.getElementById('success_div')
       successDiv.innerHTML = 'Post Successful'
     })

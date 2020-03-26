@@ -9,6 +9,7 @@ var accounts = require('./accounts.json')
 
 app.use(express.static('client'))
 // allows user to upload a new post
+/*
 app.post('/newpost', function (request, response) {
   const title = request.body.title
   const image = request.body.image
@@ -20,8 +21,29 @@ app.post('/newpost', function (request, response) {
   posts.push(newPost)
   const json = JSON.stringify(posts)
   fs.writeFile('posts.json', json, 'utf8', console.log)
+  new formidable.IncomingForm().parse(request)
+    .on('fileBegin', (name, file) => {
+      file.path = __dirname + '/uploads/' + file.name
+    })
+    .on('field', (name, field) => {
+      console.log('Field', name, field)
+    })
+    .on('file', (name, file) => {
+      console.log('Uploaded file', name, file)
+    })
+    .on('aborted', () => {
+      console.error('Request aborted by the user')
+    })
+    .on('error', (err) => {
+      console.error('Error', err)
+      throw err
+    })
+    .on('end', () => {
+      res.end()
+    })
   response.send('Success')
 })
+*/
 app.get('/pic', function (request, response) {
   const name = request.query.name
   for (let i = 0; i < accounts.length; i++) {
@@ -81,26 +103,46 @@ app.get('/search', function (request, response) {
   }
   response.send(matching)
 })
+app.post('/newpost', (req, res) => {
+  new formidable.IncomingForm().parse(req)
+  .on('fileBegin', (name, file) => {
+    file.path = __dirname + '/uploads/' + file.name
+  })
+  .on('field', (name, field) => {
+    console.log('Field', name, field)
+  })
+  .on('file', (name, file) => {
+    console.log('Uploaded file', name, file)
+  })
+  .on('aborted', () => {
+    console.error('Request aborted by the user')
+  })
+  .on('error', (error) => {
+    console.error('Error', error)
+    handleError(error)
+  })
+  .on('end', () => {
+    res.end()
+  }) 
+  res.send("Success")
+})
 app.post('/fileupload', (req, res) => {
   new formidable.IncomingForm().parse(req)
-    .on('fileBegin', (name, file) => {
-      file.path = __dirname + '/uploads/' + file.name
-    })
-    .on('field', (name, field) => {
-      console.log('Field', name, field)
-    })
-    .on('file', (name, file) => {
-      console.log('Uploaded file', name, file)
-    })
-    .on('aborted', () => {
-      console.error('Request aborted by the user')
-    })
-    .on('error', (err) => {
-      console.error('Error', err)
-      throw err
-    })
-    .on('end', () => {
-      res.end()
-    })
+  .on('fileBegin', (name, file) => {
+    file.path = __dirname + '/uploads/' + file.name
+  })
+  .on('field', (name, field) => {
+    console.log('Field', name, field)
+  })
+  .on('file', (name, file) => {
+    console.log('Uploaded file', name, file)
+  })
+  .on('aborted', () => {
+    console.error('Request aborted by the user')
+  })
+  .on('end', () => {
+    res.send("Success")
+  }) 
+  
 })
 module.exports = app
