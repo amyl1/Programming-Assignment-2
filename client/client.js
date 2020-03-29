@@ -12,6 +12,8 @@ function clearAll () {
   intro.innerHTML = ''
   const successDiv = document.getElementById('success_div')
   successDiv.innerHTML = ''
+  const form = document.getElementById('form')
+  form.innerHTML = ''
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -218,13 +220,14 @@ async function viewpost (title) {
 }
 // finish this,allows user to put a new comment on an existing post
 function comment (title) {
+  // add try catch
   clearAll()
   const div = document.getElementById('search_results')
   const form = document.createElement('form')
   form.setAttribute('method', 'post')
   form.setAttribute('action', 'http://127.0.0.1:8090/comment')
   const input = document.createElement('input')
-  input.setAttribute('id', 'Comment')
+  input.setAttribute('id', 'comment')
   input.setAttribute('type', 'text')
   input.setAttribute('placeholder', 'Comment')
   input.setAttribute('class', 'form-control')
@@ -234,17 +237,20 @@ function comment (title) {
   form.append(button)
   div.append(form)
   form.addEventListener('submit', async function (event) {
-    try {
-      event.preventDefault()
-      clearAll()
-      // how to pass title into this
-      const response = await fetch('http://127.0.0.1:8090/comment')
-      console.log(response)
-      const successDiv = document.getElementById('success_div')
-      successDiv.innerHTML = 'Comment Submitted'
-    } catch (error) {
-      handleError(error)
-    }
+    event.preventDefault()
+    clearAll()
+    const comment = document.getElementById('comment').value
+    const data = { comment, title }
+    const response = await fetch('http://127.0.0.1:8090/comment',
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    const successDiv = document.getElementById('success_div')
+    successDiv.innerHTML="Comment Added"
   })
 }
 // finish this
@@ -321,40 +327,59 @@ upload.addEventListener('click', async function (event) {
     event.preventDefault()
     clearAll()
     const uploadDiv = document.getElementById('upload_div')
-    const title = document.createElement('h2')
-    title.innerHTML = 'New Post'
-    const form = document.getElementById('form')
+    const h = document.createElement('h2')
+    h.innerHTML = 'Upload New Post'
+    const form = document.createElement('form')
+    form.setAttribute('action', 'http://127.0.0.1:8090/newpost')
+    form.setAttribute('method', 'post')
+    form.setAttribute('id', 'newupload')
     const in1 = document.createElement('input')
     in1.setAttribute('name', 'title')
     in1.setAttribute('id', 'title')
     in1.setAttribute('type', 'text')
     in1.setAttribute('placeholder', 'Post Title')
     in1.setAttribute('class', 'form-control')
-    const label1 = document.createElement('label')
-    label1.setAttribute('for', 'title')
-    label1.innerHTML = 'Post Title:'
+    const l1 = document.createElement('label')
+    l1.setAttribute('for', 'title')
+    l1.innerHTML = 'Post Title:'
     const in2 = document.createElement('input')
-    in2.setAttribute('type', 'file')
-    in2.setAttribute('name', 'filetoupload')
-    const label2 = document.createElement('label')
-    label2.setAttribute('for', 'filetoupload')
-    label2.innerHTML = 'Select a file from your computer:'
-    const in3 = document.createElement('input')
-    in3.setAttribute('type', 'submit')
-    form.append(label1)
+    in2.setAttribute('name', 'image')
+    in2.setAttribute('id', 'image')
+    in2.setAttribute('type', 'text')
+    in2.setAttribute('placeholder', 'Image URL')
+    in2.setAttribute('class', 'form-control')
+    const l2 = document.createElement('label')
+    l2.setAttribute('for', 'image')
+    l2.innerHTML = 'The URL of your image:'
+    const button = document.createElement('button')
+    button.innerHTML = 'Post'
+    form.append(l1)
     form.append(in1)
-    form.append(label2)
+    form.append(l2)
     form.append(in2)
-    form.append(in3)
-    uploadDiv.append(title)
-    form.addEventListener('submit', async function (event) {
-      // fix event prevent
-
-      const response = await fetch('http://127.0.0.1:8090/fileupload')
+    form.append(button)
+    uploadDiv.appendChild(h)
+    uploadDiv.append(form)
+    const uploadForm = document.getElementById('newupload')
+    uploadForm.addEventListener('submit', async function (event) {
       event.preventDefault()
+      const title = document.getElementById('title').value
+      const image = document.getElementById('image').value
+      const data = { title: title, image: image }
       clearAll()
-
-      console.log(response)
+      fetch('http://127.0.0.1:8090/newpost'
+        , {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrer: 'no-referrer',
+          body: JSON.stringify(data)
+        })
       const successDiv = document.getElementById('success_div')
       successDiv.innerHTML = 'Post Successful'
     })

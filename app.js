@@ -1,49 +1,15 @@
 const express = require('express')
 const app = express()
 var bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json())
 var fs = require('fs')
-var formidable = require('formidable')
 var posts = require('./posts.json')
 var accounts = require('./accounts.json')
-
 app.use(express.static('client'))
-// allows user to upload a new post
-/*
-app.post('/newpost', function (request, response) {
-  const title = request.body.title
-  const image = request.body.image
-  const newPost = {
-    title: title,
-    image: image,
-    comments: []
-  }
-  posts.push(newPost)
-  const json = JSON.stringify(posts)
-  fs.writeFile('posts.json', json, 'utf8', console.log)
-  new formidable.IncomingForm().parse(request)
-    .on('fileBegin', (name, file) => {
-      file.path = __dirname + '/uploads/' + file.name
-    })
-    .on('field', (name, field) => {
-      console.log('Field', name, field)
-    })
-    .on('file', (name, file) => {
-      console.log('Uploaded file', name, file)
-    })
-    .on('aborted', () => {
-      console.error('Request aborted by the user')
-    })
-    .on('error', (err) => {
-      console.error('Error', err)
-      throw err
-    })
-    .on('end', () => {
-      res.end()
-    })
-  response.send('Success')
-})
-*/
+
 app.get('/pic', function (request, response) {
   const name = request.query.name
   for (let i = 0; i < accounts.length; i++) {
@@ -53,7 +19,7 @@ app.get('/pic', function (request, response) {
     }
   }
 })
-
+// used in the viewpost function
 app.get('/post', function (request, response) {
   const title = request.query.title
   for (let i = 0; i < posts.length; i++) {
@@ -72,13 +38,16 @@ app.post('/newaccount', function (request, response) {
 })
 app.post('/comment', function (request, response) {
   const comment = request.body.Comment
-  console.log(comment)
-  /*
-  post=posts.push({ User: user, pic: pic })
-  console.log(accounts)
-  const json = JSON.stringify(accounts)
-  fs.writeFile('accounts.json', json, 'utf8', console.log)
-  */
+  const title = request.body.title
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].title.toLowerCase() === title) {
+      console.log(comment)
+      console.log(title)
+      posts[i].comments.push(comment)
+      const json = JSON.stringify(posts)
+      fs.writeFile('posts.json', json, 'utf8', console.log)
+    }
+  }
   response.send('Success')
 })
 
@@ -104,38 +73,18 @@ app.get('/search', function (request, response) {
   response.send(matching)
 })
 
-app.post('/fileupload', (req, res) => {
-  new formidable.IncomingForm().parse(req)
-    .on('fileBegin', (name, file) => {
-      file.path = __dirname + '/uploads/' + file.name
-    })
-    .on('field', (name, field) => {
-      console.log('Field', name, field)
-    })
-    .on('file', (name, file, field) => {
-      console.log('Uploaded file', name, file)
-      console.log('name' + field)
-    })
-    .on('aborted', () => {
-      console.error('Request aborted by the user')
-    })
-    .on('error', (err) => {
-      console.error('Error', err)
-      throw err
-    })
-  // d=Json doesnt work
-    .on('end', (name, file, field) => {
-      res.end()
-      const image = __dirname + '/uploads/' + file.name
-      const newPost = {
-        title: title,
-        image: image,
-        comments: []
-      }
-      posts.push(newPost)
-      const json = JSON.stringify(posts)
-      fs.writeFile('posts.json', json, 'utf8', console.log)
-    })
+app.post('/newpost', (request, res) => {
+  const title = request.body.title
+  const image = request.body.image
+  console.log(title + image)
+  const newPost = {
+    title: title,
+    image: image,
+    comments: []
+  }
+  posts.push(newPost)
+  const json = JSON.stringify(posts)
+  fs.writeFile('posts.json', json, 'utf8', console.log)
   res.send('Success')
 })
 
