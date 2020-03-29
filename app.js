@@ -37,12 +37,10 @@ app.post('/newaccount', function (request, response) {
   response.send('Success')
 })
 app.post('/comment', function (request, response) {
-  const comment = request.body.Comment
+  const comment = request.body.comment
   const title = request.body.title
   for (let i = 0; i < posts.length; i++) {
-    if (posts[i].title.toLowerCase() === title) {
-      console.log(comment)
-      console.log(title)
+    if (posts[i].title === title) {
       posts[i].comments.push(comment)
       const json = JSON.stringify(posts)
       fs.writeFile('posts.json', json, 'utf8', console.log)

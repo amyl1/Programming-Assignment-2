@@ -251,19 +251,24 @@ function comment (title) {
   div.append(form)
   form.addEventListener('submit', async function (event) {
     event.preventDefault()
-    clearAll()
     const comment = document.getElementById('comment').value
-    const data = { comment, title }
-    const response = await fetch('http://127.0.0.1:8090/comment',
-      {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-    const successDiv = document.getElementById('success_div')
-    successDiv.innerHTML="Comment Added"
+    const data = { comment:comment, title:title }
+    clearAll()
+      fetch('http://127.0.0.1:8090/comment'
+        , {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrer: 'no-referrer',
+          body: JSON.stringify(data)
+        })
+      const successDiv = document.getElementById('success_div')
+      successDiv.innerHTML = 'Comment Posted'
   })
 }
 // finish this
