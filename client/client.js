@@ -89,12 +89,25 @@ async function userlogin () {
     uploadDiv.append(form)
     const newAccount = document.getElementById('newaccount')
     newAccount.addEventListener('submit', async function (event) {
-      const response = await fetch('http://127.0.0.1:8090/newaccount')// needed
-      // doesnt work
-      const successDiv = document.getElementById('success_div')
-      successDiv.innerHTML = 'Account Created'
-      clearAll()
       event.preventDefault()
+      const User = document.getElementById('User').value
+      const pic = document.getElementById('pic').value
+      const data = { User:User,pic:pic }
+      clearAll()
+      fetch('http://127.0.0.1:8090/newaccount'
+        , {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrer: 'no-referrer',
+          body: JSON.stringify(data)
+        })
+        userlogin()
     })
   }
   async function login (name) {
