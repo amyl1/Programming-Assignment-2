@@ -103,46 +103,40 @@ app.get('/search', function (request, response) {
   }
   response.send(matching)
 })
-app.post('/newpost', (req, res) => {
-  new formidable.IncomingForm().parse(req)
-  .on('fileBegin', (name, file) => {
-    file.path = __dirname + '/uploads/' + file.name
-  })
-  .on('field', (name, field) => {
-    console.log('Field', name, field)
-  })
-  .on('file', (name, file) => {
-    console.log('Uploaded file', name, file)
-  })
-  .on('aborted', () => {
-    console.error('Request aborted by the user')
-  })
-  .on('error', (error) => {
-    console.error('Error', error)
-    handleError(error)
-  })
-  .on('end', () => {
-    res.end()
-  }) 
-  res.send("Success")
-})
+
 app.post('/fileupload', (req, res) => {
   new formidable.IncomingForm().parse(req)
-  .on('fileBegin', (name, file) => {
-    file.path = __dirname + '/uploads/' + file.name
-  })
-  .on('field', (name, field) => {
-    console.log('Field', name, field)
-  })
-  .on('file', (name, file) => {
-    console.log('Uploaded file', name, file)
-  })
-  .on('aborted', () => {
-    console.error('Request aborted by the user')
-  })
-  .on('end', () => {
-    res.send("Success")
-  }) 
-  
+    .on('fileBegin', (name, file) => {
+      file.path = __dirname + '/uploads/' + file.name
+    })
+    .on('field', (name, field) => {
+      console.log('Field', name, field)
+    })
+    .on('file', (name, file, field) => {
+      console.log('Uploaded file', name, file)
+      console.log('name' + field)
+    })
+    .on('aborted', () => {
+      console.error('Request aborted by the user')
+    })
+    .on('error', (err) => {
+      console.error('Error', err)
+      throw err
+    })
+  // d=Json doesnt work
+    .on('end', (name, file, field) => {
+      res.end()
+      const image = __dirname + '/uploads/' + file.name
+      const newPost = {
+        title: title,
+        image: image,
+        comments: []
+      }
+      posts.push(newPost)
+      const json = JSON.stringify(posts)
+      fs.writeFile('posts.json', json, 'utf8', console.log)
+    })
+  res.send('Success')
 })
+
 module.exports = app

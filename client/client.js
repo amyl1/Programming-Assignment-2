@@ -1,4 +1,4 @@
-//complete this
+// complete this
 function handleError (error) {
   alert(error)
 }
@@ -322,7 +322,7 @@ upload.addEventListener('click', async function (event) {
     clearAll()
     const uploadDiv = document.getElementById('upload_div')
     const title = document.createElement('h2')
-    title.innerHTML="New Post"
+    title.innerHTML = 'New Post'
     const form = document.getElementById('form')
     const in1 = document.createElement('input')
     in1.setAttribute('name', 'title')
@@ -333,14 +333,14 @@ upload.addEventListener('click', async function (event) {
     const label1 = document.createElement('label')
     label1.setAttribute('for', 'title')
     label1.innerHTML = 'Post Title:'
-    const in2=document.createElement("input")
-    in2.setAttribute("type","file")
-    in2.setAttribute("name","filetoupload")
+    const in2 = document.createElement('input')
+    in2.setAttribute('type', 'file')
+    in2.setAttribute('name', 'filetoupload')
     const label2 = document.createElement('label')
     label2.setAttribute('for', 'filetoupload')
     label2.innerHTML = 'Select a file from your computer:'
     const in3 = document.createElement('input')
-    in3.setAttribute('type','submit')
+    in3.setAttribute('type', 'submit')
     form.append(label1)
     form.append(in1)
     form.append(label2)
@@ -348,12 +348,12 @@ upload.addEventListener('click', async function (event) {
     form.append(in3)
     uploadDiv.append(title)
     form.addEventListener('submit', async function (event) {
-      //fix event prevent
-      
-      const response=await fetch('http://127.0.0.1:8090/fileupload')
+      // fix event prevent
+
+      const response = await fetch('http://127.0.0.1:8090/fileupload')
       event.preventDefault()
       clearAll()
-      
+
       console.log(response)
       const successDiv = document.getElementById('success_div')
       successDiv.innerHTML = 'Post Successful'
