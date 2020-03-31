@@ -48,6 +48,24 @@ app.post('/comment', function (request, response) {
   }
   response.send('Success')
 })
+app.post('/delete', function (request, res) {
+  const loggedin = request.body.loggedin
+  const title = request.body.title
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].title === title) {
+      const user = posts[i].user
+      if (user === loggedin) {
+        posts.splice(0, 1)
+        const json = JSON.stringify(posts)
+        fs.writeFile('posts.json', json, 'utf8', console.log)
+        res.send('Success')
+      } else {
+        res.status(403)
+        res.send('Forbidden')
+      }
+    }
+  }
+})
 
 // displays all posts
 app.get('/all', function (req, resp) {
@@ -74,9 +92,12 @@ app.get('/search', function (request, response) {
 app.post('/newpost', (request, res) => {
   const title = request.body.title
   const image = request.body.image
-  console.log(title + image)
+  const des = request.body.des
+  const user = request.body.user
   const newPost = {
+    user: user,
     title: title,
+    des: des,
     image: image,
     comments: []
   }
