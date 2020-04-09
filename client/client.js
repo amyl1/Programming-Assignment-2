@@ -114,6 +114,7 @@ async function userlogin () {
       userlogin()
     })
   }
+}
   async function login (name) {
     const login = document.getElementById('user')
     const pic = document.createElement('img')
@@ -134,7 +135,7 @@ async function userlogin () {
     results.innerHTML = body2
     genAlbum(results)
   }
-}
+
 // creates items for each post in posts.json
 function genAlbum (results) {
   try {
@@ -143,13 +144,14 @@ function genAlbum (results) {
     for (const result of results) {
       const div1 = document.createElement('div')
       div1.setAttribute('class', 'col-sm-12 col-md-6 col-lg-4 col-xl-3')
+      const h=document.createElement("h4")
+      h.innerHTML="Title: "+result.title
       const img = document.createElement('img')
       img.setAttribute('src', result.image)
       img.setAttribute('alt', result.title)
       img.setAttribute('height', '200')
-      const para = document.createElement('p')
-      const node = document.createTextNode(result.title)
-      para.appendChild(node)
+      const p = document.createElement('p')
+      p.innerHTML=result.des
       const bt1 = document.createElement('button')
       bt1.innerHTML = 'View Post'
       bt1.setAttribute('id', result.title)
@@ -171,11 +173,16 @@ function genAlbum (results) {
         var title = bt3.id
         deletepost(title)
       }
+      const small=document.createElement("small")
+      small.setAttribute("class","text-muted")
+      small.innerHTML=result.user
+      div1.append(h)
       div1.append(img)
-      div1.append(para)
+      div1.append(p)
       div1.append(bt1)
       div1.append(bt2)
       div1.append(bt3)
+      div1.append(small)
       const heading = document.createElement('h5')
       heading.innerHTML = 'Comments:'
       div1.append(heading)
@@ -302,6 +309,18 @@ function comment (title) {
         })
       const successDiv = document.getElementById('success_div')
       successDiv.innerHTML = 'Comment Posted'
+      const button2=document.createElement('button')
+      button2.innerHTML="Return to show all posts"
+      successDiv.append(button2)
+      button2.addEventListener('click',async function(event){
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
+      
     })
   } catch (error) {
     handleError(error)
@@ -476,6 +495,7 @@ upload.addEventListener('click', async function (event) {
       successDiv.innerHTML = 'Post Successful'
     })
   } catch (error) {
+    console.log(error)
     handleError(error)
   }
 })

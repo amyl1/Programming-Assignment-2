@@ -60,8 +60,8 @@ app.post('/delete', function (request, res) {
         fs.writeFile('posts.json', json, 'utf8', console.log)
         res.send('Success')
       } else {
-        res.status(403)
-        res.send('Forbidden')
+        res.status("403")
+        res.send("Forbidden")
       }
     }
   }
@@ -94,17 +94,25 @@ app.post('/newpost', (request, res) => {
   const image = request.body.image
   const des = request.body.des
   const user = request.body.user
-  const newPost = {
-    user: user,
-    title: title,
-    des: des,
-    image: image,
-    comments: []
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].title === title) {
+      res.status(403)
+      res.send("Forbidden")
+    }else{
+      const newPost = {
+        user: user,
+        title: title,
+        des: des,
+        image: image,
+        comments: []
+      }
+      posts.push(newPost)
+      const json = JSON.stringify(posts)
+      fs.writeFile('posts.json', json, 'utf8', console.log)
+      res.send('Success')
+    }
   }
-  posts.push(newPost)
-  const json = JSON.stringify(posts)
-  fs.writeFile('posts.json', json, 'utf8', console.log)
-  res.send('Success')
+  
 })
 
 module.exports = app
