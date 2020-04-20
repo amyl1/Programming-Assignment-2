@@ -18,6 +18,8 @@ function clearAll () {
   post.innerHTML = ''
   const comment = document.getElementById('comment')
   comment.innerHTML = ''
+  const button = document.getElementById('button')
+  button.innerHTML = ''
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -307,19 +309,32 @@ function comment (title) {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         })
-      const successDiv = document.getElementById('success_div')
-      successDiv.innerHTML = 'Comment Posted'
-      const button2=document.createElement('button')
-      button2.innerHTML="Return to show all posts"
-      successDiv.append(button2)
-      button2.addEventListener('click',async function(event){
-        event.preventDefault()
-        const response = await fetch('http://127.0.0.1:8090/all')
-        const body = await response.text()
-        const results = JSON.parse(body)
-        results.innerHTML = body
-        genAlbum(results)
-      })
+        const main=document.getElementById('jumbo')
+        const div=document.createElement('div')
+        div.setAttribute('class','jumbotron')
+        const heading=document.createElement('h1')
+        heading.setAttribute('align','center')
+        heading.innerHTML='Post Successful'
+        const text=document.createElement('p')
+        text.setAttribute('class','lead')
+        text.setAttribute('align','center')
+        text.innerHTML="Your post has been successfully uploaded."
+        const button2=document.createElement('button')
+        button2.setAttribute('type','button')
+        button2.setAttribute('class','btn btn-primary btn-block')
+        button2.innerHTML="Return to show all posts"
+        button2.addEventListener('click',async function(event){
+          event.preventDefault()
+          const response = await fetch('http://127.0.0.1:8090/all')
+          const body = await response.text()
+          const results = JSON.parse(body)
+          results.innerHTML = body
+          genAlbum(results)
+        })
+        div.append(heading)
+        div.append(text)
+        div.append(button2)
+        main.append(div)
       
     })
   } catch (error) {
@@ -491,8 +506,32 @@ upload.addEventListener('click', async function (event) {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         })
-      const successDiv = document.getElementById('success_div')
-      successDiv.innerHTML = 'Post Successful'
+      const main=document.getElementById('jumbo')
+      const div=document.createElement('div')
+      div.setAttribute('class','jumbotron')
+      const heading=document.createElement('h1')
+      heading.setAttribute('align','center')
+      heading.innerHTML='Post Successful'
+      const text=document.createElement('p')
+      text.setAttribute('class','lead')
+      text.setAttribute('align','center')
+      text.innerHTML="Your post has been successfully uploaded."
+      const button2=document.createElement('button')
+      button2.setAttribute('type','button')
+      button2.setAttribute('class','btn btn-primary btn-block')
+      button2.innerHTML="Return to show all posts"
+      button2.addEventListener('click',async function(event){
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
+      div.append(heading)
+      div.append(text)
+      div.append(button2)
+      main.append(div)
     })
   } catch (error) {
     console.log(error)
