@@ -20,6 +20,8 @@ function clearAll () {
   comment.innerHTML = ''
   const button = document.getElementById('button')
   button.innerHTML = ''
+  const jumbo=document.getElementById('jumbo')
+  jumbo.innerHTML=''
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -274,13 +276,18 @@ async function viewpost (title) {
   resultsDiv.append(div1)
 }
 // Allows the user to comment
-function comment (title) {
+async function comment (title) {
   try {
     clearAll()
     const div = document.getElementById('comment')
+    div.setAttribute('class','jumbotron')
+    div.setAttribute('height','500px')
     const form = document.createElement('form')
     form.setAttribute('method', 'post')
     form.setAttribute('action', 'http://127.0.0.1:8090/comment')
+    const h = document.createElement('h3')
+    h.setAttribute('align', 'justify')
+    h.innerHTML = 'Enter your comment:'
     const input = document.createElement('input')
     input.setAttribute('id', 'new_comment')
     input.setAttribute('type', 'text')
@@ -288,8 +295,11 @@ function comment (title) {
     input.setAttribute('class', 'form-control')
     const button = document.createElement('button')
     button.innerHTML = 'Post'
+    button.setAttribute('type','button')
+    button.setAttribute('class','btn btn-primary btn-block')
     form.append(input)
     form.append(button)
+    div.append(h)
     div.append(form)
     form.addEventListener('submit', async function (event) {
       event.preventDefault()

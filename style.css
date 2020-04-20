@@ -5,6 +5,6 @@
 body{
     background-color: red;
 }
-.jumbotron{
-    text-align: justify;
+div.jumbotron{
+    height: 500px;
 }
