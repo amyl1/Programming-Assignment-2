@@ -35,25 +35,35 @@ async function userlogin () {
   for (const result of results) {
     const div4 = document.createElement('div')
     div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'")
-    const item = document.createElement('p')
+    const div5=document.createElement('div')
+    div5.setAttribute('class','card mb-4 box-shadow bg-secondary text-white')
+    const item = document.createElement('h5')
     const image = document.createElement('img')
     item.setAttribute('id', result.User)
+    item.setAttribute('align', 'center')
     item.innerHTML = result.User
     image.setAttribute('src', result.pic)
-    image.setAttribute('height', '100px')
-    image.setAttribute('width', '100px')
-    div4.append(image)
-    div4.append(item)
-    div4.onclick = function () {
+    image.setAttribute('height', '120px')
+    image.setAttribute('width', '120px')
+    image.setAttribute('align','middle')
+    image.setAttribute('class','rounded-circle')
+    const centre=document.createElement("center")
+    centre.append(image)
+    div5.append(centre)
+    div5.append(item)
+    div5.onclick = function () {
       var name = item.id
       login(name)
     }
+    div4.append(div5)
     div.append(div4)
   }
+  const buttondiv=document.getElementById('button')
   const button = document.createElement('button')
   button.innerHTML = 'Create New Account'
   button.setAttribute('id', 'new_account')
-  div.append(button)
+  button.setAttribute('class','btn btn-outline-primary btn-block')
+  buttondiv.append(button)
   button.onclick = async function () {
     event.preventDefault()
     clearAll()
@@ -221,19 +231,25 @@ async function viewpost (title) {
   const img = document.createElement('img')
   img.setAttribute('src', result.image)
   img.setAttribute('alt', result.title)
-  img.setAttribute('class', 'card-img-top')
+  img.setAttribute('class', 'img-fluid rounded border border-dark')
+  img.setAttribute('align','middle')
+  const centre=document.createElement("center")
+  centre.append(img)
   const div2 = document.createElement('div')
   div2.setAttribute('class', 'card-body')
   const div3 = document.createElement('div')
   div3.setAttribute('class', 'card-text')
   const postTitle = document.createElement('h3')
+  postTitle.setAttribute('class','text-primary')
   postTitle.innerHTML = 'Post Title: ' + result.title
   const heading1 = document.createElement('h4')
   heading1.innerHTML = 'Description:'
+  heading1.setAttribute('class','text-primary')
   const para = document.createElement('p')
   para.innerHTML = result.des
   const bt1 = document.createElement('button')
   bt1.setAttribute('id', result.title)
+  bt1.setAttribute('class', 'btn btn-secondary border border-light')
   bt1.onclick = function () {
     var title = bt1.id
     comment(title)
@@ -242,17 +258,19 @@ async function viewpost (title) {
   const bt2 = document.createElement('button')
   bt2.innerHTML = 'Delete Post'
   bt2.setAttribute('id', result.title)
+  bt2.setAttribute('class', 'btn btn-secondary border border-light')
   bt2.onclick = function () {
     var title = bt2.id
     deletepost(title)
   }
   div1.append(postTitle)
-  div1.append(img)
+  div1.append(centre)
   div3.append(heading1)
   div3.append(para)
 
   const heading2 = document.createElement('h4')
   heading2.innerHTML = 'Comments:'
+  heading2.setAttribute('class','text-primary')
   div3.append(heading2)
   const comments = result.comments
   if (comments.length === 0) {
@@ -267,9 +285,10 @@ async function viewpost (title) {
       div3.append(p)
     }
   }
-
-  div3.append(bt1)
-  div3.append(bt2)
+  const centre2=document.createElement('center')
+  centre2.append(bt1)
+  centre2.append(bt2)
+  div3.append(centre2)
 
   div2.append(div3)
   div1.append(div2)
@@ -281,7 +300,6 @@ async function comment (title) {
     clearAll()
     const div = document.getElementById('comment')
     div.setAttribute('class','jumbotron')
-    div.setAttribute('height','500px')
     const form = document.createElement('form')
     form.setAttribute('method', 'post')
     form.setAttribute('action', 'http://127.0.0.1:8090/comment')
