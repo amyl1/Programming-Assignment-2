@@ -42,7 +42,7 @@ app.post('/comment', function (request, response) {
   for (let i = 0; i < posts.length; i++) {
     if (posts[i].title === title) {
       posts[i].comments.push(comment)
-      const json = JSON.stringify(posts)
+       const json = JSON.stringify(posts)
       fs.writeFile('posts.json', json, 'utf8', console.log)
     }
   }

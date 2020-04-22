@@ -428,17 +428,46 @@ searchForm.addEventListener('submit', async function (event) {
       results.innerHTML = body
       if (results === undefined || results.length === 0) {
         const resultsDiv = document.getElementById('search_results')
-        const message = document.createElement('p')
+        resultsDiv.setAttribute('class','jumbotron')
+        const message = document.createElement('h4')
+        message.setAttribute('align','center')
         message.innerHTML = 'No matching posts'
+        const button=document.createElement('button')
+        button.setAttribute('type','button')
+        button.setAttribute('class','btn btn-primary btn-block')
+        button.innerHTML="Return to show all posts"
         resultsDiv.append(message)
+        resultsDiv.append(button)
+        button.addEventListener('click',async function(event){
+          event.preventDefault()
+          const response = await fetch('http://127.0.0.1:8090/all')
+          const body = await response.text()
+          const results = JSON.parse(body)
+          results.innerHTML = body
+          genAlbum(results)
+        })
       } else {
         genAlbum(results)
       }
     } else {
       const resultsDiv = document.getElementById('search_results')
-      const message = document.createElement('p')
-      message.innerHTML = 'No search term entered'
+      resultsDiv.setAttribute('class','jumbotron')
+      const message = document.createElement('h4')
+      message.setAttribute('align','center')
+      message.innerHTML = 'No Search Term Entered'
+      const button=document.createElement('button')
+      button.setAttribute('type','button')
+      button.setAttribute('class','btn btn-primary btn-block')
+      button.innerHTML="Return to show all posts"
       resultsDiv.append(message)
+      resultsDiv.append(button)
+      button.addEventListener('click',async function(event){
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
     }
   } catch (error) {
     handleError(error)
