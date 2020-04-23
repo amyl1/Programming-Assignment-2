@@ -18,10 +18,12 @@ function clearAll () {
   post.innerHTML = ''
   const comment = document.getElementById('comment')
   comment.innerHTML = ''
+  comment.setAttribute('class', 'row')
   const button = document.getElementById('button')
   button.innerHTML = ''
-  const jumbo=document.getElementById('jumbo')
-  jumbo.innerHTML=''
+  button.setAttribute('class', 'row')
+  const jumbo = document.getElementById('jumbo')
+  jumbo.innerHTML = ''
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -35,8 +37,8 @@ async function userlogin () {
   for (const result of results) {
     const div4 = document.createElement('div')
     div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'")
-    const div5=document.createElement('div')
-    div5.setAttribute('class','card mb-4 box-shadow bg-secondary text-white')
+    const div5 = document.createElement('div')
+    div5.setAttribute('class', 'card mb-4 box-shadow bg-secondary text-white')
     const item = document.createElement('h5')
     const image = document.createElement('img')
     item.setAttribute('id', result.User)
@@ -45,9 +47,9 @@ async function userlogin () {
     image.setAttribute('src', result.pic)
     image.setAttribute('height', '120px')
     image.setAttribute('width', '120px')
-    image.setAttribute('align','middle')
-    image.setAttribute('class','rounded-circle')
-    const centre=document.createElement("center")
+    image.setAttribute('align', 'middle')
+    image.setAttribute('class', 'rounded-circle')
+    const centre = document.createElement('center')
     centre.append(image)
     div5.append(centre)
     div5.append(item)
@@ -58,11 +60,11 @@ async function userlogin () {
     div4.append(div5)
     div.append(div4)
   }
-  const buttondiv=document.getElementById('button')
+  const buttondiv = document.getElementById('button')
   const button = document.createElement('button')
   button.innerHTML = 'Create New Account'
   button.setAttribute('id', 'new_account')
-  button.setAttribute('class','btn btn-outline-primary btn-block')
+  button.setAttribute('class', 'btn btn-outline-primary btn-block')
   buttondiv.append(button)
   button.onclick = async function () {
     event.preventDefault()
@@ -129,26 +131,26 @@ async function userlogin () {
     })
   }
 }
-  async function login (name) {
-    const login = document.getElementById('user')
-    const pic = document.createElement('img')
-    const response = await fetch('http://127.0.0.1:8090/pic?name=' + name)
-    const body = await response.text()
-    pic.setAttribute('src', body)
-    pic.setAttribute('height', 40)
-    login.append(pic)
-    const namediv = document.getElementById('name')
-    const para = document.createElement('p')
-    para.setAttribute('id', 'username')
-    para.innerHTML = name
-    namediv.append(para)
-    clearAll()
-    const response2 = await fetch('http://127.0.0.1:8090/all')
-    const body2 = await response2.text()
-    const results = JSON.parse(body2)
-    results.innerHTML = body2
-    genAlbum(results)
-  }
+async function login (name) {
+  const login = document.getElementById('user')
+  const pic = document.createElement('img')
+  const response = await fetch('http://127.0.0.1:8090/pic?name=' + name)
+  const body = await response.text()
+  pic.setAttribute('src', body)
+  pic.setAttribute('height', 40)
+  login.append(pic)
+  const namediv = document.getElementById('name')
+  const para = document.createElement('p')
+  para.setAttribute('id', 'username')
+  para.innerHTML = name
+  namediv.append(para)
+  clearAll()
+  const response2 = await fetch('http://127.0.0.1:8090/all')
+  const body2 = await response2.text()
+  const results = JSON.parse(body2)
+  results.innerHTML = body2
+  genAlbum(results)
+}
 
 // creates items for each post in posts.json
 function genAlbum (results) {
@@ -158,14 +160,14 @@ function genAlbum (results) {
     for (const result of results) {
       const div1 = document.createElement('div')
       div1.setAttribute('class', 'col-sm-12 col-md-6 col-lg-4 col-xl-3')
-      const h=document.createElement("h4")
-      h.innerHTML="Title: "+result.title
+      const h = document.createElement('h4')
+      h.innerHTML = 'Title: ' + result.title
       const img = document.createElement('img')
       img.setAttribute('src', result.image)
       img.setAttribute('alt', result.title)
       img.setAttribute('height', '200')
       const p = document.createElement('p')
-      p.innerHTML=result.des
+      p.innerHTML = result.des
       const bt1 = document.createElement('button')
       bt1.innerHTML = 'View Post'
       bt1.setAttribute('id', result.title)
@@ -187,9 +189,9 @@ function genAlbum (results) {
         var title = bt3.id
         deletepost(title)
       }
-      const small=document.createElement("small")
-      small.setAttribute("class","text-muted")
-      small.innerHTML=result.user
+      const small = document.createElement('small')
+      small.setAttribute('class', 'text-muted')
+      small.innerHTML = result.user
       div1.append(h)
       div1.append(img)
       div1.append(p)
@@ -232,19 +234,19 @@ async function viewpost (title) {
   img.setAttribute('src', result.image)
   img.setAttribute('alt', result.title)
   img.setAttribute('class', 'img-fluid rounded border border-dark')
-  img.setAttribute('align','middle')
-  const centre=document.createElement("center")
+  img.setAttribute('align', 'middle')
+  const centre = document.createElement('center')
   centre.append(img)
   const div2 = document.createElement('div')
   div2.setAttribute('class', 'card-body')
   const div3 = document.createElement('div')
   div3.setAttribute('class', 'card-text')
   const postTitle = document.createElement('h3')
-  postTitle.setAttribute('class','text-primary')
+  postTitle.setAttribute('class', 'text-primary')
   postTitle.innerHTML = 'Post Title: ' + result.title
   const heading1 = document.createElement('h4')
   heading1.innerHTML = 'Description:'
-  heading1.setAttribute('class','text-primary')
+  heading1.setAttribute('class', 'text-primary')
   const para = document.createElement('p')
   para.innerHTML = result.des
   const bt1 = document.createElement('button')
@@ -270,7 +272,7 @@ async function viewpost (title) {
 
   const heading2 = document.createElement('h4')
   heading2.innerHTML = 'Comments:'
-  heading2.setAttribute('class','text-primary')
+  heading2.setAttribute('class', 'text-primary')
   div3.append(heading2)
   const comments = result.comments
   if (comments.length === 0) {
@@ -285,7 +287,7 @@ async function viewpost (title) {
       div3.append(p)
     }
   }
-  const centre2=document.createElement('center')
+  const centre2 = document.createElement('center')
   centre2.append(bt1)
   centre2.append(bt2)
   div3.append(centre2)
@@ -299,7 +301,7 @@ async function comment (title) {
   try {
     clearAll()
     const div = document.getElementById('comment')
-    div.setAttribute('class','jumbotron')
+    div.setAttribute('class', 'jumbotron')
     const form = document.createElement('form')
     form.setAttribute('method', 'post')
     form.setAttribute('action', 'http://127.0.0.1:8090/comment')
@@ -313,8 +315,8 @@ async function comment (title) {
     input.setAttribute('class', 'form-control')
     const button = document.createElement('button')
     button.innerHTML = 'Post'
-    button.setAttribute('type','button')
-    button.setAttribute('class','btn btn-primary btn-block')
+    button.setAttribute('type', 'submit')
+    button.setAttribute('class', 'btn btn-primary btn-block')
     form.append(input)
     form.append(button)
     div.append(h)
@@ -323,7 +325,6 @@ async function comment (title) {
       event.preventDefault()
       const comment = document.getElementById('new_comment').value
       const data = { comment: comment, title: title }
-      clearAll()
       fetch('http://127.0.0.1:8090/comment'
         , {
           method: 'POST',
@@ -337,40 +338,40 @@ async function comment (title) {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         })
-        const main=document.getElementById('jumbo')
-        const div=document.createElement('div')
-        div.setAttribute('class','jumbotron')
-        const heading=document.createElement('h1')
-        heading.setAttribute('align','center')
-        heading.innerHTML='Post Successful'
-        const text=document.createElement('p')
-        text.setAttribute('class','lead')
-        text.setAttribute('align','center')
-        text.innerHTML="Your post has been successfully uploaded."
-        const button2=document.createElement('button')
-        button2.setAttribute('type','button')
-        button2.setAttribute('class','btn btn-primary btn-block')
-        button2.innerHTML="Return to show all posts"
-        button2.addEventListener('click',async function(event){
-          event.preventDefault()
-          const response = await fetch('http://127.0.0.1:8090/all')
-          const body = await response.text()
-          const results = JSON.parse(body)
-          results.innerHTML = body
-          genAlbum(results)
-        })
-        div.append(heading)
-        div.append(text)
-        div.append(button2)
-        main.append(div)
-      
+      clearAll()
+      const main = document.getElementById('jumbo')
+      const div = document.createElement('div')
+      div.setAttribute('class', 'jumbotron')
+      const heading = document.createElement('h1')
+      heading.setAttribute('align', 'center')
+      heading.innerHTML = 'Comment Successful'
+      const text = document.createElement('p')
+      text.setAttribute('class', 'lead')
+      text.setAttribute('align', 'center')
+      text.innerHTML = 'Your comment has been successfully posted.'
+      const button2 = document.createElement('button')
+      button2.setAttribute('type', 'button')
+      button2.setAttribute('class', 'btn btn-primary btn-block')
+      button2.innerHTML = 'Return to show all posts'
+      button2.addEventListener('click', async function (event) {
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
+      div.append(heading)
+      div.append(text)
+      div.append(button2)
+      main.append(div)
     })
   } catch (error) {
     handleError(error)
   }
 }
 // finish this
-async function deletepost (title) {
+async function deletepost (error, title) {
   try {
     clearAll()
     const loggedin = document.getElementById('username').textContent
@@ -428,17 +429,17 @@ searchForm.addEventListener('submit', async function (event) {
       results.innerHTML = body
       if (results === undefined || results.length === 0) {
         const resultsDiv = document.getElementById('search_results')
-        resultsDiv.setAttribute('class','jumbotron')
+        resultsDiv.setAttribute('class', 'jumbotron')
         const message = document.createElement('h4')
-        message.setAttribute('align','center')
+        message.setAttribute('align', 'center')
         message.innerHTML = 'No matching posts'
-        const button=document.createElement('button')
-        button.setAttribute('type','button')
-        button.setAttribute('class','btn btn-primary btn-block')
-        button.innerHTML="Return to show all posts"
+        const button = document.createElement('button')
+        button.setAttribute('type', 'button')
+        button.setAttribute('class', 'btn btn-primary btn-block')
+        button.innerHTML = 'Return to show all posts'
         resultsDiv.append(message)
         resultsDiv.append(button)
-        button.addEventListener('click',async function(event){
+        button.addEventListener('click', async function (event) {
           event.preventDefault()
           const response = await fetch('http://127.0.0.1:8090/all')
           const body = await response.text()
@@ -451,23 +452,24 @@ searchForm.addEventListener('submit', async function (event) {
       }
     } else {
       const resultsDiv = document.getElementById('search_results')
-      resultsDiv.setAttribute('class','jumbotron')
+      resultsDiv.setAttribute('class', 'jumbotron')
       const message = document.createElement('h4')
-      message.setAttribute('align','center')
+      message.setAttribute('align', 'center')
       message.innerHTML = 'No Search Term Entered'
-      const button=document.createElement('button')
-      button.setAttribute('type','button')
-      button.setAttribute('class','btn btn-primary btn-block')
-      button.innerHTML="Return to show all posts"
+      const button = document.createElement('button')
+      button.setAttribute('type', 'button')
+      button.setAttribute('class', 'btn btn-primary btn-block')
+      button.innerHTML = 'Return to show all posts'
       resultsDiv.append(message)
       resultsDiv.append(button)
-      button.addEventListener('click',async function(event){
+      button.addEventListener('click', async function (event) {
         event.preventDefault()
         const response = await fetch('http://127.0.0.1:8090/all')
         const body = await response.text()
         const results = JSON.parse(body)
         results.innerHTML = body
         genAlbum(results)
+      })
     }
   } catch (error) {
     handleError(error)
@@ -529,6 +531,8 @@ upload.addEventListener('click', async function (event) {
     l3.setAttribute('for', 'des')
     l3.innerHTML = 'Post Description:'
     const button = document.createElement('button')
+    button.setAttribute('type', 'submit')
+    button.setAttribute('class', 'btn btn-primary btn-block')
     button.innerHTML = 'Post'
     form.append(l1)
     form.append(in1)
@@ -563,21 +567,21 @@ upload.addEventListener('click', async function (event) {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         })
-      const main=document.getElementById('jumbo')
-      const div=document.createElement('div')
-      div.setAttribute('class','jumbotron')
-      const heading=document.createElement('h1')
-      heading.setAttribute('align','center')
-      heading.innerHTML='Post Successful'
-      const text=document.createElement('p')
-      text.setAttribute('class','lead')
-      text.setAttribute('align','center')
-      text.innerHTML="Your post has been successfully uploaded."
-      const button2=document.createElement('button')
-      button2.setAttribute('type','button')
-      button2.setAttribute('class','btn btn-primary btn-block')
-      button2.innerHTML="Return to show all posts"
-      button2.addEventListener('click',async function(event){
+      const main = document.getElementById('jumbo')
+      const div = document.createElement('div')
+      div.setAttribute('class', 'jumbotron')
+      const heading = document.createElement('h1')
+      heading.setAttribute('align', 'center')
+      heading.innerHTML = 'Post Successful'
+      const text = document.createElement('p')
+      text.setAttribute('class', 'lead')
+      text.setAttribute('align', 'center')
+      text.innerHTML = 'Your post has been successfully uploaded.'
+      const button2 = document.createElement('button')
+      button2.setAttribute('type', 'button')
+      button2.setAttribute('class', 'btn btn-primary btn-block')
+      button2.innerHTML = 'Return to show all posts'
+      button2.addEventListener('click', async function (event) {
         event.preventDefault()
         const response = await fetch('http://127.0.0.1:8090/all')
         const body = await response.text()
@@ -592,21 +596,6 @@ upload.addEventListener('click', async function (event) {
     })
   } catch (error) {
     console.log(error)
-    handleError(error)
-  }
-})
-
-// when home is clicked, display all posts
-var home = document.getElementById('home')
-home.addEventListener('click', async function (event) {
-  try {
-    event.preventDefault()
-    const response = await fetch('http://127.0.0.1:8090/all')
-    const body = await response.text()
-    const results = JSON.parse(body)
-    results.innerHTML = body
-    genAlbum(results)
-  } catch (error) {
     handleError(error)
   }
 })

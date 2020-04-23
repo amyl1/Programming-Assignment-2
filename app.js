@@ -42,7 +42,7 @@ app.post('/comment', function (request, response) {
   for (let i = 0; i < posts.length; i++) {
     if (posts[i].title === title) {
       posts[i].comments.push(comment)
-       const json = JSON.stringify(posts)
+      const json = JSON.stringify(posts)
       fs.writeFile('posts.json', json, 'utf8', console.log)
     }
   }
@@ -60,8 +60,8 @@ app.post('/delete', function (request, res) {
         fs.writeFile('posts.json', json, 'utf8', console.log)
         res.send('Success')
       } else {
-        res.status("403")
-        res.send("Forbidden")
+        res.status('403')
+        res.send('Forbidden')
       }
     }
   }
@@ -97,8 +97,8 @@ app.post('/newpost', (request, res) => {
   for (let i = 0; i < posts.length; i++) {
     if (posts[i].title === title) {
       res.status(403)
-      res.send("Forbidden")
-    }else{
+      res.send('Forbidden')
+    } else {
       const newPost = {
         user: user,
         title: title,
@@ -112,7 +112,6 @@ app.post('/newpost', (request, res) => {
       res.send('Success')
     }
   }
-  
 })
 
 module.exports = app
