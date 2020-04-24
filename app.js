@@ -48,7 +48,7 @@ app.post('/comment', function (request, response) {
   }
   response.send('Success')
 })
-app.post('/delete', function (request, res) {
+app.post('/delete', function (request, res,err) {
   const loggedin = request.body.loggedin
   const title = request.body.title
   for (let i = 0; i < posts.length; i++) {
@@ -60,8 +60,9 @@ app.post('/delete', function (request, res) {
         fs.writeFile('posts.json', json, 'utf8', console.log)
         res.send('Success')
       } else {
-        res.status('403')
-        res.send('Forbidden')
+        res.status('403').send('You are not authorised to perform this action')
+        throw ('You are not authorised to perform this action')
+        
       }
     }
   }

@@ -1,7 +1,31 @@
 // complete this
 function handleError (error) {
-  alert(error)
+  clearAll()
+  const resultsDiv = document.getElementById('search_results')
+  resultsDiv.setAttribute('class', 'jumbotron')
+  const message = document.createElement('h4')
+  message.setAttribute('align', 'center')
+  message.innerHTML = 'Oops! An error has occured.'
+  const err = document.createElement('p')
+  err.setAttribute('align', 'center')
+  err.innerHTML = 'The error was: '+error
+  const button = document.createElement('button')
+  button.setAttribute('type', 'button')
+  button.setAttribute('class', 'btn btn-primary btn-block')
+  button.innerHTML = 'Return to show all posts'
+  resultsDiv.append(message)
+  resultsDiv.append(err)
+  resultsDiv.append(button)
+  button.addEventListener('click', async function (event) {
+    event.preventDefault()
+    const response = await fetch('http://127.0.0.1:8090/all')
+    const body = await response.text()
+    const results = JSON.parse(body)
+    results.innerHTML = body
+    genAlbum(results)
+  })
 }
+
 // empties all divs so that page is cleared before new items are generated
 function clearAll () {
   const resultsDiv = document.getElementById('search_results')
@@ -577,7 +601,6 @@ async function viewpost (title) {
 // Allows the user to comment
 async function comment (title) {
   try {
-    
     clearAll()
     const div = document.getElementById('comment')
     div.setAttribute('class', 'jumbotron')
@@ -647,11 +670,12 @@ async function comment (title) {
       main.append(div)
     })
   } catch (error) {
+    
     handleError(error)
   }
 }
 // finish this
-async function deletepost (error, title) {
+async function deletepost (title) {
   try {
     clearAll()
     const loggedin = document.getElementById('username').textContent
@@ -670,13 +694,40 @@ async function deletepost (error, title) {
         body: JSON.stringify(data)
       })
     if (response.ok) {
-      const successDiv = document.getElementById('success_div')
-      successDiv.innerHTML = 'Successfully Deleted'
+      clearAll()
+      const main = document.getElementById('jumbo')
+      const div = document.createElement('div')
+      div.setAttribute('class', 'jumbotron')
+      const heading = document.createElement('h1')
+      heading.setAttribute('align', 'center')
+      heading.innerHTML = 'Comment Successful'
+      const text = document.createElement('p')
+      text.setAttribute('class', 'lead')
+      text.setAttribute('align', 'center')
+      text.innerHTML = 'Post Successfully Deleted.'
+      const button2 = document.createElement('button')
+      button2.setAttribute('type', 'button')
+      button2.setAttribute('class', 'btn btn-primary btn-block')
+      button2.innerHTML = 'Return to show all posts'
+      button2.addEventListener('click', async function (event) {
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
+      div.append(heading)
+      div.append(text)
+      div.append(button2)
+      main.append(div)
     } else {
-      handleError(error)
+      handleError(err)
+      
     }
-  } catch (error) {
-    handleError(error)
+  } catch (err) {
+    console.log(err)
+    handleError(err)
   }
 }
 // when loaded, show accounts and allow user to create new account
