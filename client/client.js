@@ -24,6 +24,78 @@ function clearAll () {
   button.setAttribute('class', 'row')
   const jumbo = document.getElementById('jumbo')
   jumbo.innerHTML = ''
+  
+}
+function navBar(){
+  const nav=document.getElementById('navbar')
+  const home=document.createElement('a')
+  home.setAttribute('class','navbar-brand')
+  home.innerHTML='Travel Photos'
+  const button=document.createElement('button')
+  button.setAttribute('type','buttton')
+  button.setAttribute('class','navbar-toggler')
+  button.setAttribute('data-toggle','collapse')
+  button.setAttribute('data-target','#navbarCollapse')
+  const span=document.createElement('span')
+  span.setAttribute('class','navbar-toggler-icon')
+  button.append(span)
+  const div1=document.createElement('div')
+  div1.setAttribute('class','collapse navbar-collapse')
+  div1.setAttribute('id','navbarCollapse')
+  const div2=document.createElement('div')
+  div2.setAttribute('class','navbar-nav')
+  const all=document.createElement('a')
+  all.setAttribute('class','nav-item nav-link')
+  all.setAttribute('id','all')
+  all.innerHTML='Show All Posts'
+  const upload=document.createElement('a')
+  upload.setAttribute('class','nav-item nav-link')
+  upload.setAttribute('id','upload')
+  upload.innerHTML='Upload New Post'
+  const Login=document.createElement('a')
+  Login.setAttribute('class','nav-item nav-link')
+  Login.setAttribute('id','logim')
+  Login.innerHTML='Login'
+  div2.append(all)
+  div2.append(upload)
+  div2.append(Login)
+  const form=document.createElement('form')
+  form.setAttribute('id','search') 
+  form.setAttribute('action','/search')
+  form.setAttribute('class','form-inline d-flex justify-content-center md-form form-sm mt-0')  
+  const in1=document.createElement('i')
+  in1.setAttribute('class','fas fa-search')
+  in1.setAttribute('aria-hidden','true')
+  const in2=document.createElement('input')
+  in2.setAttribute('class','form-control form-control-sm ml-3 w-75')
+  in2.setAttribute('name','keyword')
+  in2.setAttribute('type','text')
+  in2.setAttribute('id','search_keyword')
+  in2.setAttribute('placeholder','Search For:')
+  form.append(in1)
+  form.append(in2)
+  const div3=document.createElement('div')
+  const div4=document.createElement('div')
+  div4.setAttribute('class','profile-userpic')
+  div4.setAttribute('id','user')
+  const div5=document.createElement('div')
+  div5.setAttribute('class','profile-usertitle')
+  const div6=document.createElement('div')
+  div6.setAttribute('class','profile-usertitle-name')
+  div6.setAttribute('id','name')
+  const text=document.createElement('p')
+  text.setAttribute('id','username')
+  div6.append(text)
+  div1.append(div2)
+  div1.append(form)
+  div3.append(div4)
+  div3.append(div5)
+  div5.append(div6)
+  nav.append(home)
+  nav.append(button)
+  nav.append(div1)
+  nav.append(div3)
+
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -132,7 +204,9 @@ async function userlogin () {
   }
 }
 async function login (name) {
+  navBar()
   const login = document.getElementById('user')
+  login.innerHTML=''
   const pic = document.createElement('img')
   const response = await fetch('http://127.0.0.1:8090/pic?name=' + name)
   const body = await response.text()
@@ -140,8 +214,7 @@ async function login (name) {
   pic.setAttribute('height', 40)
   login.append(pic)
   const namediv = document.getElementById('name')
-  const para = document.createElement('p')
-  para.setAttribute('id', 'username')
+  const para = document.getElementById('username')
   para.innerHTML = name
   namediv.append(para)
   clearAll()
@@ -287,11 +360,23 @@ async function viewpost (title) {
       div3.append(p)
     }
   }
+  const button = document.createElement('button')
+      button.setAttribute('type', 'button')
+      button.setAttribute('class', 'btn btn-primary btn-block')
+      button.innerHTML = 'Return to show all posts'
+      button.addEventListener('click', async function (event) {
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
   const centre2 = document.createElement('center')
   centre2.append(bt1)
   centre2.append(bt2)
   div3.append(centre2)
-
+  div3.append(button)
   div2.append(div3)
   div1.append(div2)
   resultsDiv.append(div1)
@@ -299,6 +384,7 @@ async function viewpost (title) {
 // Allows the user to comment
 async function comment (title) {
   try {
+    
     clearAll()
     const div = document.getElementById('comment')
     div.setAttribute('class', 'jumbotron')
@@ -338,6 +424,7 @@ async function comment (title) {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         })
+
       clearAll()
       const main = document.getElementById('jumbo')
       const div = document.createElement('div')
