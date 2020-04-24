@@ -54,7 +54,7 @@ function navBar(){
   upload.innerHTML='Upload New Post'
   const Login=document.createElement('a')
   Login.setAttribute('class','nav-item nav-link')
-  Login.setAttribute('id','logim')
+  Login.setAttribute('id','login')
   Login.innerHTML='Login'
   div2.append(all)
   div2.append(upload)
@@ -96,6 +96,199 @@ function navBar(){
   nav.append(div1)
   nav.append(div3)
 
+
+  var navLogin = document.getElementById('login')
+navLogin.addEventListener('click', async function (event) {
+  try {
+    userlogin()
+  } catch (error) {
+    handleError(error)
+  }
+})
+// Search
+var searchForm = document.getElementById('search')
+searchForm.addEventListener('submit', async function (event) {
+  try {
+    event.preventDefault()
+    clearAll()
+    const keyword = document.getElementById('search_keyword').value
+    if (keyword) {
+      const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword)
+      const body = await response.text()
+      const results = JSON.parse(body)
+      results.innerHTML = body
+      if (results === undefined || results.length === 0) {
+        const resultsDiv = document.getElementById('search_results')
+        resultsDiv.setAttribute('class', 'jumbotron')
+        const message = document.createElement('h4')
+        message.setAttribute('align', 'center')
+        message.innerHTML = 'No matching posts'
+        const button = document.createElement('button')
+        button.setAttribute('type', 'button')
+        button.setAttribute('class', 'btn btn-primary btn-block')
+        button.innerHTML = 'Return to show all posts'
+        resultsDiv.append(message)
+        resultsDiv.append(button)
+        button.addEventListener('click', async function (event) {
+          event.preventDefault()
+          const response = await fetch('http://127.0.0.1:8090/all')
+          const body = await response.text()
+          const results = JSON.parse(body)
+          results.innerHTML = body
+          genAlbum(results)
+        })
+      } else {
+        genAlbum(results)
+      }
+    } else {
+      const resultsDiv = document.getElementById('search_results')
+      resultsDiv.setAttribute('class', 'jumbotron')
+      const message = document.createElement('h4')
+      message.setAttribute('align', 'center')
+      message.innerHTML = 'No Search Term Entered'
+      const button = document.createElement('button')
+      button.setAttribute('type', 'button')
+      button.setAttribute('class', 'btn btn-primary btn-block')
+      button.innerHTML = 'Return to show all posts'
+      resultsDiv.append(message)
+      resultsDiv.append(button)
+      button.addEventListener('click', async function (event) {
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
+    }
+  } catch (error) {
+    handleError(error)
+  }
+})
+// Generate all
+var showAll = document.getElementById('all')
+showAll.addEventListener('click', async function (event) {
+  try {
+    event.preventDefault()
+    const response = await fetch('http://127.0.0.1:8090/all')
+    const body = await response.text()
+    const results = JSON.parse(body)
+    results.innerHTML = body
+    genAlbum(results)
+  } catch (error) {
+    handleError(error)
+  }
+})
+
+// upload new post
+var newUpload = document.getElementById('upload')
+newUpload.addEventListener('click', async function (event) {
+  try {
+    event.preventDefault()
+    clearAll()
+    const uploadDiv = document.getElementById('upload_div')
+    const h = document.createElement('h2')
+    h.innerHTML = 'Upload New Post'
+    const form = document.createElement('form')
+    form.setAttribute('action', 'http://127.0.0.1:8090/newpost')
+    form.setAttribute('method', 'post')
+    form.setAttribute('id', 'newupload')
+    const in1 = document.createElement('input')
+    in1.setAttribute('name', 'title')
+    in1.setAttribute('id', 'title')
+    in1.setAttribute('type', 'text')
+    in1.setAttribute('placeholder', 'Post Title')
+    in1.setAttribute('class', 'form-control')
+    const l1 = document.createElement('label')
+    l1.setAttribute('for', 'title')
+    l1.innerHTML = 'Post Title:'
+    const in2 = document.createElement('input')
+    in2.setAttribute('name', 'image')
+    in2.setAttribute('id', 'image')
+    in2.setAttribute('type', 'text')
+    in2.setAttribute('placeholder', 'Image URL')
+    in2.setAttribute('class', 'form-control')
+    const l2 = document.createElement('label')
+    l2.setAttribute('for', 'image')
+    l2.innerHTML = 'The URL of your image:'
+    const in3 = document.createElement('input')
+    in3.setAttribute('name', 'des')
+    in3.setAttribute('id', 'des')
+    in3.setAttribute('type', 'text')
+    in3.setAttribute('placeholder', 'Description')
+    in3.setAttribute('class', 'form-control')
+    const l3 = document.createElement('label')
+    l3.setAttribute('for', 'des')
+    l3.innerHTML = 'Post Description:'
+    const button = document.createElement('button')
+    button.setAttribute('type', 'submit')
+    button.setAttribute('class', 'btn btn-primary btn-block')
+    button.innerHTML = 'Post'
+    form.append(l1)
+    form.append(in1)
+    form.append(l2)
+    form.append(in2)
+    form.append(l3)
+    form.append(in3)
+    form.append(button)
+    uploadDiv.appendChild(h)
+    uploadDiv.append(form)
+    const uploadForm = document.getElementById('newupload')
+    uploadForm.addEventListener('submit', async function (event) {
+      event.preventDefault()
+      const user = document.getElementById('user').value
+      console.log(user)
+      const title = document.getElementById('title').value
+      const image = document.getElementById('image').value
+      const username = document.getElementById('username').textContent
+      const des = document.getElementById('des').value
+      const data = { user: username, title: title, image: image, des: des }
+      clearAll()
+      fetch('http://127.0.0.1:8090/newpost'
+        , {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrer: 'no-referrer',
+          body: JSON.stringify(data)
+        })
+      const main = document.getElementById('jumbo')
+      const div = document.createElement('div')
+      div.setAttribute('class', 'jumbotron')
+      const heading = document.createElement('h1')
+      heading.setAttribute('align', 'center')
+      heading.innerHTML = 'Post Successful'
+      const text = document.createElement('p')
+      text.setAttribute('class', 'lead')
+      text.setAttribute('align', 'center')
+      text.innerHTML = 'Your post has been successfully uploaded.'
+      const button2 = document.createElement('button')
+      button2.setAttribute('type', 'button')
+      button2.setAttribute('class', 'btn btn-primary btn-block')
+      button2.innerHTML = 'Return to show all posts'
+      button2.addEventListener('click', async function (event) {
+        event.preventDefault()
+        const response = await fetch('http://127.0.0.1:8090/all')
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        genAlbum(results)
+      })
+      div.append(heading)
+      div.append(text)
+      div.append(button2)
+      main.append(div)
+    })
+  } catch (error) {
+    console.log(error)
+    handleError(error)
+  }
+})
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -491,198 +684,6 @@ window.addEventListener('load', async function (event) {
   try {
     userlogin()
   } catch (error) {
-    handleError(error)
-  }
-})
-var navLogin = document.getElementById('login')
-navLogin.addEventListener('click', async function (event) {
-  try {
-    userlogin()
-  } catch (error) {
-    handleError(error)
-  }
-})
-// Search
-var searchForm = document.getElementById('search')
-searchForm.addEventListener('submit', async function (event) {
-  try {
-    event.preventDefault()
-    clearAll()
-    const keyword = document.getElementById('search_keyword').value
-    if (keyword) {
-      const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword)
-      const body = await response.text()
-      const results = JSON.parse(body)
-      results.innerHTML = body
-      if (results === undefined || results.length === 0) {
-        const resultsDiv = document.getElementById('search_results')
-        resultsDiv.setAttribute('class', 'jumbotron')
-        const message = document.createElement('h4')
-        message.setAttribute('align', 'center')
-        message.innerHTML = 'No matching posts'
-        const button = document.createElement('button')
-        button.setAttribute('type', 'button')
-        button.setAttribute('class', 'btn btn-primary btn-block')
-        button.innerHTML = 'Return to show all posts'
-        resultsDiv.append(message)
-        resultsDiv.append(button)
-        button.addEventListener('click', async function (event) {
-          event.preventDefault()
-          const response = await fetch('http://127.0.0.1:8090/all')
-          const body = await response.text()
-          const results = JSON.parse(body)
-          results.innerHTML = body
-          genAlbum(results)
-        })
-      } else {
-        genAlbum(results)
-      }
-    } else {
-      const resultsDiv = document.getElementById('search_results')
-      resultsDiv.setAttribute('class', 'jumbotron')
-      const message = document.createElement('h4')
-      message.setAttribute('align', 'center')
-      message.innerHTML = 'No Search Term Entered'
-      const button = document.createElement('button')
-      button.setAttribute('type', 'button')
-      button.setAttribute('class', 'btn btn-primary btn-block')
-      button.innerHTML = 'Return to show all posts'
-      resultsDiv.append(message)
-      resultsDiv.append(button)
-      button.addEventListener('click', async function (event) {
-        event.preventDefault()
-        const response = await fetch('http://127.0.0.1:8090/all')
-        const body = await response.text()
-        const results = JSON.parse(body)
-        results.innerHTML = body
-        genAlbum(results)
-      })
-    }
-  } catch (error) {
-    handleError(error)
-  }
-})
-// Generate all
-var all = document.getElementById('all')
-all.addEventListener('click', async function (event) {
-  try {
-    event.preventDefault()
-    const response = await fetch('http://127.0.0.1:8090/all')
-    const body = await response.text()
-    const results = JSON.parse(body)
-    results.innerHTML = body
-    genAlbum(results)
-  } catch (error) {
-    handleError(error)
-  }
-})
-
-// upload new post
-var upload = document.getElementById('upload')
-upload.addEventListener('click', async function (event) {
-  try {
-    event.preventDefault()
-    clearAll()
-    const uploadDiv = document.getElementById('upload_div')
-    const h = document.createElement('h2')
-    h.innerHTML = 'Upload New Post'
-    const form = document.createElement('form')
-    form.setAttribute('action', 'http://127.0.0.1:8090/newpost')
-    form.setAttribute('method', 'post')
-    form.setAttribute('id', 'newupload')
-    const in1 = document.createElement('input')
-    in1.setAttribute('name', 'title')
-    in1.setAttribute('id', 'title')
-    in1.setAttribute('type', 'text')
-    in1.setAttribute('placeholder', 'Post Title')
-    in1.setAttribute('class', 'form-control')
-    const l1 = document.createElement('label')
-    l1.setAttribute('for', 'title')
-    l1.innerHTML = 'Post Title:'
-    const in2 = document.createElement('input')
-    in2.setAttribute('name', 'image')
-    in2.setAttribute('id', 'image')
-    in2.setAttribute('type', 'text')
-    in2.setAttribute('placeholder', 'Image URL')
-    in2.setAttribute('class', 'form-control')
-    const l2 = document.createElement('label')
-    l2.setAttribute('for', 'image')
-    l2.innerHTML = 'The URL of your image:'
-    const in3 = document.createElement('input')
-    in3.setAttribute('name', 'des')
-    in3.setAttribute('id', 'des')
-    in3.setAttribute('type', 'text')
-    in3.setAttribute('placeholder', 'Description')
-    in3.setAttribute('class', 'form-control')
-    const l3 = document.createElement('label')
-    l3.setAttribute('for', 'des')
-    l3.innerHTML = 'Post Description:'
-    const button = document.createElement('button')
-    button.setAttribute('type', 'submit')
-    button.setAttribute('class', 'btn btn-primary btn-block')
-    button.innerHTML = 'Post'
-    form.append(l1)
-    form.append(in1)
-    form.append(l2)
-    form.append(in2)
-    form.append(l3)
-    form.append(in3)
-    form.append(button)
-    uploadDiv.appendChild(h)
-    uploadDiv.append(form)
-    const uploadForm = document.getElementById('newupload')
-    uploadForm.addEventListener('submit', async function (event) {
-      event.preventDefault()
-      const user = document.getElementById('user').value
-      console.log(user)
-      const title = document.getElementById('title').value
-      const image = document.getElementById('image').value
-      const username = document.getElementById('username').textContent
-      const des = document.getElementById('des').value
-      const data = { user: username, title: title, image: image, des: des }
-      clearAll()
-      fetch('http://127.0.0.1:8090/newpost'
-        , {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrer: 'no-referrer',
-          body: JSON.stringify(data)
-        })
-      const main = document.getElementById('jumbo')
-      const div = document.createElement('div')
-      div.setAttribute('class', 'jumbotron')
-      const heading = document.createElement('h1')
-      heading.setAttribute('align', 'center')
-      heading.innerHTML = 'Post Successful'
-      const text = document.createElement('p')
-      text.setAttribute('class', 'lead')
-      text.setAttribute('align', 'center')
-      text.innerHTML = 'Your post has been successfully uploaded.'
-      const button2 = document.createElement('button')
-      button2.setAttribute('type', 'button')
-      button2.setAttribute('class', 'btn btn-primary btn-block')
-      button2.innerHTML = 'Return to show all posts'
-      button2.addEventListener('click', async function (event) {
-        event.preventDefault()
-        const response = await fetch('http://127.0.0.1:8090/all')
-        const body = await response.text()
-        const results = JSON.parse(body)
-        results.innerHTML = body
-        genAlbum(results)
-      })
-      div.append(heading)
-      div.append(text)
-      div.append(button2)
-      main.append(div)
-    })
-  } catch (error) {
-    console.log(error)
     handleError(error)
   }
 })
