@@ -76,13 +76,8 @@ function navBar(){
   upload.setAttribute('class','nav-item nav-link')
   upload.setAttribute('id','upload')
   upload.innerHTML='Upload New Post'
-  const Login=document.createElement('a')
-  Login.setAttribute('class','nav-item nav-link')
-  Login.setAttribute('id','login')
-  Login.innerHTML='Login'
   div2.append(all)
   div2.append(upload)
-  div2.append(Login)
   const form=document.createElement('form')
   form.setAttribute('id','search') 
   form.setAttribute('action','/search')
@@ -120,15 +115,6 @@ function navBar(){
   nav.append(div1)
   nav.append(div3)
 
-
-  var navLogin = document.getElementById('login')
-navLogin.addEventListener('click', async function (event) {
-  try {
-    userlogin()
-  } catch (error) {
-    handleError(error)
-  }
-})
 // Search
 var searchForm = document.getElementById('search')
 searchForm.addEventListener('submit', async function (event) {
