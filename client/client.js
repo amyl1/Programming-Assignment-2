@@ -136,11 +136,7 @@ function navBar () {
 all.addEventListener('click', async function (event) {
   try {
     event.preventDefault();
-    const response = await fetch('http://127.0.0.1:8090/all');
-    const body = await response.text();
-    const results = JSON.parse(body);
-    results.innerHTML = body;
-    genAlbum(results);
+    showAll();
   } catch (error) {
     handleError(error);
   }
@@ -152,109 +148,8 @@ newUpload.addEventListener('click', async function (event) {
   try {
     event.preventDefault();
     clearAll();
-    const uploadDiv = document.getElementById('upload_div');
-    const h = document.createElement('h2');
-    h.innerHTML = 'Upload New Post';
-    const form = document.createElement('form');
-    form.setAttribute('action', 'http://127.0.0.1:8090/newpost');
-    form.setAttribute('method', 'post');
-    form.setAttribute('id', 'newupload');
-    const in1 = document.createElement('input');
-    in1.setAttribute('name', 'title');
-    in1.setAttribute('id', 'title');
-    in1.setAttribute('type', 'text');
-    in1.setAttribute('placeholder', 'Post Title');
-    in1.setAttribute('class', 'form-control');
-    const l1 = document.createElement('label');
-    l1.setAttribute('for', 'title');
-    l1.innerHTML = 'Post Title:';
-    const in2 = document.createElement('input');
-    in2.setAttribute('name', 'image');
-    in2.setAttribute('id', 'image');
-    in2.setAttribute('type', 'text');
-    in2.setAttribute('placeholder', 'Image URL');
-    in2.setAttribute('class', 'form-control');
-    const l2 = document.createElement('label');
-    l2.setAttribute('for', 'image');
-    l2.innerHTML = 'The URL of your image:';
-    const in3 = document.createElement('input');
-    in3.setAttribute('name', 'des');
-    in3.setAttribute('id', 'des');
-    in3.setAttribute('type', 'text');
-    in3.setAttribute('placeholder', 'Description');
-    in3.setAttribute('class', 'form-control');
-    const l3 = document.createElement('label');
-    l3.setAttribute('for', 'des');
-    l3.innerHTML = 'Post Description:';
-    const button = document.createElement('button');
-    button.setAttribute('type', 'submit');
-    button.setAttribute('class', 'btn btn-primary btn-block');
-    button.innerHTML = 'Post';
-    form.append(l1);
-    form.append(in1);
-    form.append(l2);
-    form.append(in2);
-    form.append(l3);
-    form.append(in3);
-    form.append(button);
-    uploadDiv.appendChild(h);
-    uploadDiv.append(form);
-    const uploadForm = document.getElementById('newupload');
-    uploadForm.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      const title = document.getElementById('title').value;
-      const image = document.getElementById('image').value;
-      const user = document.getElementById('username').textContent;
-      const des = document.getElementById('des').value;
-      const data = { user: user, title: title, image: image, des: des };
-      clearAll();
-      const response = await fetch('http://127.0.0.1:8090/newpost'
-        , {
-          method: 'POST',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          redirect: 'follow',
-          referrer: 'no-referrer',
-          body: JSON.stringify(data)
-        });
-      if (response.ok) {
-        const main = document.getElementById('jumbo');
-        const div = document.createElement('div');
-        div.setAttribute('class', 'jumbotron');
-        const heading = document.createElement('h1');
-        heading.setAttribute('align', 'center');
-        heading.innerHTML = 'Post Successful';
-        const text = document.createElement('p');
-        text.setAttribute('class', 'lead');
-        text.setAttribute('align', 'center');
-        text.innerHTML = 'Your post has been successfully uploaded.';
-        const button2 = document.createElement('button');
-        button2.setAttribute('type', 'button');
-        button2.setAttribute('class', 'btn btn-primary btn-block');
-        button2.innerHTML = 'Return to show all posts';
-        button2.addEventListener('click', async function (event) {
-          event.preventDefault();
-          const response = await fetch('http://127.0.0.1:8090/all');
-          const body = await response.text();
-          const results = JSON.parse(body);
-          results.innerHTML = body;
-          genAlbum(results);
-        });
-        div.append(heading);
-        div.append(text);
-        div.append(button2);
-        main.append(div);
-      } else {
-        handleError('A post with that title already exists');
-      
-    };
-    });
+    genUploadForm();
   } catch (error) {
-    console.log(error);
     handleError(error);
   }
 });
@@ -263,86 +158,7 @@ searchUsers.addEventListener('click', async function (event) {
   try {
     event.preventDefault();
     clearAll();
-    const div = document.getElementById('intro');
-    div.setAttribute('class', 'jumbotron');
-    var uSearch = document.createElement('form');
-    uSearch.setAttribute('id', 'search');
-    uSearch.setAttribute('action', '/searchUser');
-    uSearch.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
-    const i = document.createElement('input');
-    i.setAttribute('class', 'form-control form-control-sm ml-3 w-100');
-    i.setAttribute('name', 'name');
-    i.setAttribute('type', 'text');
-    i.setAttribute('id', 'searchUser');
-    i.setAttribute('placeholder', 'Search For:');
-    const l = document.createElement('label');
-    l.setAttribute('for', 'name');
-    l.innerHTML = 'Enter the name of the user you wish to search for:';
-    const c = document.createElement('center');
-    const b = document.createElement('button');
-    b.setAttribute('type', 'button');
-    b.setAttribute('class', 'btn btn-primary');
-    b.setAttribute('align', 'center');
-    b.innerHTML = 'Search';
-    c.append(b);
-    uSearch.append(l);
-    uSearch.append(i);
-    div.append(uSearch);
-    div.append(c);
-    uSearch.addEventListener('submit', async function (event) {
-    event.preventDefault();
-    clearAll();
-    const name = document.getElementById('searchUser').value;
-    if (name) {
-      const response = await fetch('http://127.0.0.1:8090/searchUser?name=' + name);
-      const body = await response.text();
-      const results = JSON.parse(body);
-      results.innerHTML = body;
-      if (results === undefined || results.length === 0) {
-        const resultsDiv = document.getElementById('search_results');
-        resultsDiv.setAttribute('class', 'jumbotron');
-        const message = document.createElement('h4');
-        message.setAttribute('align', 'center');
-        message.innerHTML = 'No matching users';
-        const button = document.createElement('button');
-        button.setAttribute('type', 'button');
-        button.setAttribute('class', 'btn btn-primary btn-block');
-        button.innerHTML = 'Return to show all posts';
-        resultsDiv.append(message);
-        resultsDiv.append(search);
-        button.addEventListener('click', async function (event) {
-          event.preventDefault();
-          const response = await fetch('http://127.0.0.1:8090/all');
-          const body = await response.text();
-          const results = JSON.parse(body);
-          results.innerHTML = body;
-          genAlbum(results);
-        });
-      } else {
-        genAlbum(results);
-      }
-    } else {
-      const resultsDiv = document.getElementById('search_results');
-      resultsDiv.setAttribute('class', 'jumbotron');
-      const message = document.createElement('h4');
-      message.setAttribute('align', 'center');
-      message.innerHTML = 'No Search Term Entered';
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.setAttribute('class', 'btn btn-primary btn-block');
-      button.innerHTML = 'Return to show all posts';
-      resultsDiv.append(message);
-      resultsDiv.append(button);
-      button.addEventListener('click', async function (event) {
-        event.preventDefault();
-        const response = await fetch('http://127.0.0.1:8090/all');
-        const body = await response.text();
-        const results = JSON.parse(body);
-        results.innerHTML = body;
-        genAlbum(results);
-      });
-    }
-  });
+    userSearch();
   } catch (error) {
     handleError(error);
   }
@@ -351,38 +167,7 @@ viewUsers.addEventListener('click', async function (event) {
   try {
     event.preventDefault();
     clearAll();
-    const response = await fetch('http://127.0.0.1:8090/accounts');
-  const body = await response.text();
-  const results = JSON.parse(body);
-  results.innerHTML = body;
-  const div = document.getElementById('intro');
-
-  for (const result of results) {
-    const div4 = document.createElement('div');
-    div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
-    const div5 = document.createElement('div');
-    div5.setAttribute('class', 'card mb-4 box-shadow bg-secondary text-white');
-    const item = document.createElement('h5');
-    const image = document.createElement('img');
-    item.setAttribute('id', result.User);
-    item.setAttribute('align', 'center');
-    item.innerHTML = result.User;
-    image.setAttribute('src', result.pic);
-    image.setAttribute('height', '120px');
-    image.setAttribute('width', '120px');
-    image.setAttribute('align', 'middle');
-    image.setAttribute('class', 'rounded-circle');
-    const centre = document.createElement('center');
-    centre.append(image);
-    div5.append(centre);
-    div5.append(item);
-    div5.onclick = function () {
-      var name = item.id;
-      view(name);
-    };
-    div4.append(div5);
-    div.append(div4);
-  }
+    viewAllUsers();
   } catch (error) {
     handleError(error);
   }
@@ -515,7 +300,6 @@ async function login (name) {
   results.innerHTML = body2;
   genAlbum(results);
 }
-
 // creates items for each post in posts.json
 function genAlbum (results) {
   try {
@@ -799,6 +583,233 @@ async function deletepost (title) {
     }
   } catch (error) {
     handleError(error);
+  }
+}
+
+async function showAll () {
+    const response = await fetch('http://127.0.0.1:8090/all');
+    const body = await response.text();
+    const results = JSON.parse(body);
+    results.innerHTML = body;
+    genAlbum(results);
+}
+async function genUploadForm () {
+  const uploadDiv = document.getElementById('upload_div');
+    const h = document.createElement('h2');
+    h.innerHTML = 'Upload New Post';
+    const form = document.createElement('form');
+    form.setAttribute('action', 'http://127.0.0.1:8090/newpost');
+    form.setAttribute('method', 'post');
+    form.setAttribute('id', 'newupload');
+    const in1 = document.createElement('input');
+    in1.setAttribute('name', 'title');
+    in1.setAttribute('id', 'title');
+    in1.setAttribute('type', 'text');
+    in1.setAttribute('placeholder', 'Post Title');
+    in1.setAttribute('class', 'form-control');
+    const l1 = document.createElement('label');
+    l1.setAttribute('for', 'title');
+    l1.innerHTML = 'Post Title:';
+    const in2 = document.createElement('input');
+    in2.setAttribute('name', 'image');
+    in2.setAttribute('id', 'image');
+    in2.setAttribute('type', 'text');
+    in2.setAttribute('placeholder', 'Image URL');
+    in2.setAttribute('class', 'form-control');
+    const l2 = document.createElement('label');
+    l2.setAttribute('for', 'image');
+    l2.innerHTML = 'The URL of your image:';
+    const in3 = document.createElement('input');
+    in3.setAttribute('name', 'des');
+    in3.setAttribute('id', 'des');
+    in3.setAttribute('type', 'text');
+    in3.setAttribute('placeholder', 'Description');
+    in3.setAttribute('class', 'form-control');
+    const l3 = document.createElement('label');
+    l3.setAttribute('for', 'des');
+    l3.innerHTML = 'Post Description:';
+    const button = document.createElement('button');
+    button.setAttribute('type', 'submit');
+    button.setAttribute('class', 'btn btn-primary btn-block');
+    button.innerHTML = 'Post';
+    form.append(l1);
+    form.append(in1);
+    form.append(l2);
+    form.append(in2);
+    form.append(l3);
+    form.append(in3);
+    form.append(button);
+    uploadDiv.appendChild(h);
+    uploadDiv.append(form);
+    const uploadForm = document.getElementById('newupload');
+    uploadForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const title = document.getElementById('title').value;
+      const image = document.getElementById('image').value;
+      const user = document.getElementById('username').textContent;
+      const des = document.getElementById('des').value;
+      const data = { user: user, title: title, image: image, des: des };
+      clearAll();
+      const response = await fetch('http://127.0.0.1:8090/newpost'
+        , {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          redirect: 'follow',
+          referrer: 'no-referrer',
+          body: JSON.stringify(data)
+        });
+      if (response.ok) {
+        const main = document.getElementById('jumbo');
+        const div = document.createElement('div');
+        div.setAttribute('class', 'jumbotron');
+        const heading = document.createElement('h1');
+        heading.setAttribute('align', 'center');
+        heading.innerHTML = 'Post Successful';
+        const text = document.createElement('p');
+        text.setAttribute('class', 'lead');
+        text.setAttribute('align', 'center');
+        text.innerHTML = 'Your post has been successfully uploaded.';
+        const button2 = document.createElement('button');
+        button2.setAttribute('type', 'button');
+        button2.setAttribute('class', 'btn btn-primary btn-block');
+        button2.innerHTML = 'Return to show all posts';
+        button2.addEventListener('click', async function (event) {
+          event.preventDefault();
+          const response = await fetch('http://127.0.0.1:8090/all');
+          const body = await response.text();
+          const results = JSON.parse(body);
+          results.innerHTML = body;
+          genAlbum(results);
+        });
+        div.append(heading);
+        div.append(text);
+        div.append(button2);
+        main.append(div);
+      } else {
+        handleError('A post with that title already exists');
+    };
+    });
+}
+
+async function userSearch () {
+  const div = document.getElementById('intro');
+    div.setAttribute('class', 'jumbotron');
+    var uSearch = document.createElement('form');
+    uSearch.setAttribute('id', 'search');
+    uSearch.setAttribute('action', '/searchUser');
+    uSearch.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
+    const i = document.createElement('input');
+    i.setAttribute('class', 'form-control form-control-sm ml-3 w-100');
+    i.setAttribute('name', 'name');
+    i.setAttribute('type', 'text');
+    i.setAttribute('id', 'searchUser');
+    i.setAttribute('placeholder', 'Search For:');
+    const l = document.createElement('label');
+    l.setAttribute('for', 'name');
+    l.innerHTML = 'Enter the name of the user you wish to search for:';
+    const c = document.createElement('center');
+    const b = document.createElement('button');
+    b.setAttribute('type', 'button');
+    b.setAttribute('class', 'btn btn-primary');
+    b.setAttribute('align', 'center');
+    b.innerHTML = 'Search';
+    c.append(b);
+    uSearch.append(l);
+    uSearch.append(i);
+    div.append(uSearch);
+    div.append(c);
+    uSearch.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    clearAll();
+    const name = document.getElementById('searchUser').value;
+    if (name) {
+      const response = await fetch('http://127.0.0.1:8090/searchUser?name=' + name);
+      const body = await response.text();
+      const results = JSON.parse(body);
+      results.innerHTML = body;
+      if (results === undefined || results.length === 0) {
+        const resultsDiv = document.getElementById('search_results');
+        resultsDiv.setAttribute('class', 'jumbotron');
+        const message = document.createElement('h4');
+        message.setAttribute('align', 'center');
+        message.innerHTML = 'No matching users';
+        const button = document.createElement('button');
+        button.setAttribute('type', 'button');
+        button.setAttribute('class', 'btn btn-primary btn-block');
+        button.innerHTML = 'Return to show all posts';
+        resultsDiv.append(message);
+        resultsDiv.append(search);
+        button.addEventListener('click', async function (event) {
+          event.preventDefault();
+          const response = await fetch('http://127.0.0.1:8090/all');
+          const body = await response.text();
+          const results = JSON.parse(body);
+          results.innerHTML = body;
+          genAlbum(results);
+        });
+      } else {
+        genAlbum(results);
+      }
+    } else {
+      const resultsDiv = document.getElementById('search_results');
+      resultsDiv.setAttribute('class', 'jumbotron');
+      const message = document.createElement('h4');
+      message.setAttribute('align', 'center');
+      message.innerHTML = 'No Search Term Entered';
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'btn btn-primary btn-block');
+      button.innerHTML = 'Return to show all posts';
+      resultsDiv.append(message);
+      resultsDiv.append(button);
+      button.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const response = await fetch('http://127.0.0.1:8090/all');
+        const body = await response.text();
+        const results = JSON.parse(body);
+        results.innerHTML = body;
+        genAlbum(results);
+      });
+    }
+  });
+};
+async function viewAllUsers () {
+  const response = await fetch('http://127.0.0.1:8090/accounts');
+  const body = await response.text();
+  const results = JSON.parse(body);
+  results.innerHTML = body;
+  const div = document.getElementById('intro');
+
+  for (const result of results) {
+    const div4 = document.createElement('div');
+    div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
+    const div5 = document.createElement('div');
+    div5.setAttribute('class', 'card mb-4 box-shadow bg-secondary text-white');
+    const item = document.createElement('h5');
+    const image = document.createElement('img');
+    item.setAttribute('id', result.User);
+    item.setAttribute('align', 'center');
+    item.innerHTML = result.User;
+    image.setAttribute('src', result.pic);
+    image.setAttribute('height', '120px');
+    image.setAttribute('width', '120px');
+    image.setAttribute('align', 'middle');
+    image.setAttribute('class', 'rounded-circle');
+    const centre = document.createElement('center');
+    centre.append(image);
+    div5.append(centre);
+    div5.append(item);
+    div5.onclick = function () {
+      var name = item.id;
+      view(name);
+    };
+    div4.append(div5);
+    div.append(div4);
   }
 }
 // when loaded, show accounts and allow user to create new account
