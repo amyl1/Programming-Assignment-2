@@ -48,17 +48,17 @@ app.post('/comment', function (request, response) {
   }
   response.send('Success');
 });
-app.post('/delete', function (request, res, err) {
+app.post('/delete', function (request, res) {
   const loggedin = request.body.loggedin;
   const title = request.body.title;
   for (let i = 0; i < posts.length; i++) {
     if (posts[i].title === title) {
       const user = posts[i].user;
       if (user === loggedin) {
-        posts.splice(0, 1);
+        posts.splice(i, 1);
         const json = JSON.stringify(posts);
         fs.writeFile('posts.json', json, 'utf8', console.log);
-        res.send('Success');
+        res.status(200).send('Success');
       } else {
         res.status('403').send('You are not authorised to perform this action');
         throw Error('You are not authorised to perform this action');
@@ -105,9 +105,10 @@ app.post('/newpost', (request, res) => {
   const user = request.body.user;
   for (let i = 0; i < posts.length; i++) {
     if (posts[i].title === title) {
-      res.status(403);
-      res.send('Forbidden');
-    } else {
+      res.status(403).send('Post with this title already exists');
+      throw Error('Post with this title already exists');
+    }
+}
       const newPost = {
         user: user,
         title: title,
@@ -119,8 +120,6 @@ app.post('/newpost', (request, res) => {
       const json = JSON.stringify(posts);
       fs.writeFile('posts.json', json, 'utf8', console.log);
       res.send('Success');
-    }
-  }
 });
 
 module.exports = app;

@@ -35,11 +35,11 @@ function search (name) {
 function clearAll () {
   const resultsDiv = document.getElementById('search_results');
   resultsDiv.innerHTML = '';
-  resultsDiv.setAttribute('class','row');
+  resultsDiv.setAttribute('class', 'row');
   const upload = document.getElementById('upload_div');
   upload.innerHTML = '';
   const intro = document.getElementById('intro');
-  intro.setAttribute('class','row')
+  intro.setAttribute('class', 'row');
   intro.innerHTML = '';
   const successDiv = document.getElementById('success_div');
   successDiv.innerHTML = '';
@@ -202,15 +202,13 @@ newUpload.addEventListener('click', async function (event) {
     const uploadForm = document.getElementById('newupload');
     uploadForm.addEventListener('submit', async function (event) {
       event.preventDefault();
-      const user = document.getElementById('user').value;
-      console.log(user);
       const title = document.getElementById('title').value;
       const image = document.getElementById('image').value;
-      const username = document.getElementById('username').textContent;
+      const user = document.getElementById('username').textContent;
       const des = document.getElementById('des').value;
-      const data = { user: username, title: title, image: image, des: des };
+      const data = { user: user, title: title, image: image, des: des };
       clearAll();
-      fetch('http://127.0.0.1:8090/newpost'
+      const response = await fetch('http://127.0.0.1:8090/newpost'
         , {
           method: 'POST',
           mode: 'cors',
@@ -223,32 +221,37 @@ newUpload.addEventListener('click', async function (event) {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         });
-      const main = document.getElementById('jumbo');
-      const div = document.createElement('div');
-      div.setAttribute('class', 'jumbotron');
-      const heading = document.createElement('h1');
-      heading.setAttribute('align', 'center');
-      heading.innerHTML = 'Post Successful';
-      const text = document.createElement('p');
-      text.setAttribute('class', 'lead');
-      text.setAttribute('align', 'center');
-      text.innerHTML = 'Your post has been successfully uploaded.';
-      const button2 = document.createElement('button');
-      button2.setAttribute('type', 'button');
-      button2.setAttribute('class', 'btn btn-primary btn-block');
-      button2.innerHTML = 'Return to show all posts';
-      button2.addEventListener('click', async function (event) {
-        event.preventDefault();
-        const response = await fetch('http://127.0.0.1:8090/all');
-        const body = await response.text();
-        const results = JSON.parse(body);
-        results.innerHTML = body;
-        genAlbum(results);
-      });
-      div.append(heading);
-      div.append(text);
-      div.append(button2);
-      main.append(div);
+      if (response.ok) {
+        const main = document.getElementById('jumbo');
+        const div = document.createElement('div');
+        div.setAttribute('class', 'jumbotron');
+        const heading = document.createElement('h1');
+        heading.setAttribute('align', 'center');
+        heading.innerHTML = 'Post Successful';
+        const text = document.createElement('p');
+        text.setAttribute('class', 'lead');
+        text.setAttribute('align', 'center');
+        text.innerHTML = 'Your post has been successfully uploaded.';
+        const button2 = document.createElement('button');
+        button2.setAttribute('type', 'button');
+        button2.setAttribute('class', 'btn btn-primary btn-block');
+        button2.innerHTML = 'Return to show all posts';
+        button2.addEventListener('click', async function (event) {
+          event.preventDefault();
+          const response = await fetch('http://127.0.0.1:8090/all');
+          const body = await response.text();
+          const results = JSON.parse(body);
+          results.innerHTML = body;
+          genAlbum(results);
+        });
+        div.append(heading);
+        div.append(text);
+        div.append(button2);
+        main.append(div);
+      } else {
+        handleError('A post with that title already exists');
+      
+    };
     });
   } catch (error) {
     console.log(error);
@@ -261,7 +264,7 @@ searchUsers.addEventListener('click', async function (event) {
     event.preventDefault();
     clearAll();
     const div = document.getElementById('intro');
-    div.setAttribute('class','jumbotron')
+    div.setAttribute('class', 'jumbotron');
     var uSearch = document.createElement('form');
     uSearch.setAttribute('id', 'search');
     uSearch.setAttribute('action', '/searchUser');
@@ -272,20 +275,20 @@ searchUsers.addEventListener('click', async function (event) {
     i.setAttribute('type', 'text');
     i.setAttribute('id', 'searchUser');
     i.setAttribute('placeholder', 'Search For:');
-    const l=document.createElement('label');
-    l.setAttribute('for','name')
-    l.innerHTML='Enter the name of the user you wish to search for:'
-    const c=document.createElement('center')
+    const l = document.createElement('label');
+    l.setAttribute('for', 'name');
+    l.innerHTML = 'Enter the name of the user you wish to search for:';
+    const c = document.createElement('center');
     const b = document.createElement('button');
     b.setAttribute('type', 'button');
     b.setAttribute('class', 'btn btn-primary');
     b.setAttribute('align', 'center');
     b.innerHTML = 'Search';
-    c.append(b)
-    uSearch.append(l)
+    c.append(b);
+    uSearch.append(l);
     uSearch.append(i);
     div.append(uSearch);
-    div.append(c)
+    div.append(c);
     uSearch.addEventListener('submit', async function (event) {
     event.preventDefault();
     clearAll();
@@ -744,7 +747,7 @@ async function comment (title) {
     handleError(error);
   }
 }
-// finish this
+
 async function deletepost (title) {
   try {
     clearAll();
@@ -770,7 +773,7 @@ async function deletepost (title) {
       div.setAttribute('class', 'jumbotron');
       const heading = document.createElement('h1');
       heading.setAttribute('align', 'center');
-      heading.innerHTML = 'Comment Successful';
+      heading.innerHTML = 'Deleted';
       const text = document.createElement('p');
       text.setAttribute('class', 'lead');
       text.setAttribute('align', 'center');
@@ -791,12 +794,11 @@ async function deletepost (title) {
       div.append(text);
       div.append(button2);
       main.append(div);
+    } else {
+      handleError('You are not permitted to perform this action');
     }
   } catch (error) {
     handleError(error);
-  }
-  finally{
-    handleError('You are not permitted to perform this action');
   }
 }
 // when loaded, show accounts and allow user to create new account
