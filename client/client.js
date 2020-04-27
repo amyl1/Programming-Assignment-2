@@ -25,12 +25,7 @@ function handleError (error) {
     genAlbum(results);
   });
 }
-function view (name) {
-  alert(name);
-}
-function search (name) {
-  alert(name);
-}
+
 // empties all divs so that page is cleared before new items are generated
 function clearAll () {
   const resultsDiv = document.getElementById('search_results');
@@ -98,17 +93,13 @@ function navBar () {
   form.setAttribute('id', 'search');
   form.setAttribute('action', '/search');
   form.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
-  const in1 = document.createElement('i');
-  in1.setAttribute('class', 'fas fa-search');
-  in1.setAttribute('aria-hidden', 'true');
-  const in2 = document.createElement('input');
-  in2.setAttribute('class', 'form-control form-control-sm ml-3 w-75');
-  in2.setAttribute('name', 'keyword');
-  in2.setAttribute('type', 'text');
-  in2.setAttribute('id', 'search_keyword');
-  in2.setAttribute('placeholder', 'Search For:');
+  const in1 = document.createElement('input');
+  in1.setAttribute('class', 'form-control form-control-sm ml-3 w-75');
+  in1.setAttribute('name', 'keyword');
+  in1.setAttribute('type', 'text');
+  in1.setAttribute('id', 'search_keyword');
+  in1.setAttribute('placeholder', 'Search For:');
   form.append(in1);
-  form.append(in2);
   const div3 = document.createElement('div');
   const div4 = document.createElement('div');
   div4.setAttribute('class', 'profile-userpic');
@@ -143,8 +134,7 @@ all.addEventListener('click', async function (event) {
 });
 
 // upload new post
-var newUpload = document.getElementById('upload');
-newUpload.addEventListener('click', async function (event) {
+upload.addEventListener('click', async function (event) {
   try {
     event.preventDefault();
     clearAll();
@@ -172,6 +162,66 @@ viewUsers.addEventListener('click', async function (event) {
     handleError(error);
   }
 });
+
+const searchForm=document.getElementById('search')
+searchForm.addEventListener('submit',async function(event){
+    try {
+      event.preventDefault()
+      clearAll()
+      const keyword = document.getElementById('search_keyword').value
+      if (keyword) {
+        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword)
+        const body = await response.text()
+        const results = JSON.parse(body)
+        results.innerHTML = body
+        if (results === undefined || results.length === 0) {
+          const resultsDiv = document.getElementById('search_results')
+          resultsDiv.setAttribute('class', 'jumbotron')
+          const message = document.createElement('h4')
+          message.setAttribute('align', 'center')
+          message.innerHTML = 'No matching posts'
+          const button = document.createElement('button')
+          button.setAttribute('type', 'button')
+          button.setAttribute('class', 'btn btn-primary btn-block')
+          button.innerHTML = 'Return to show all posts'
+          resultsDiv.append(message)
+          resultsDiv.append(button)
+          button.addEventListener('click', async function (event) {
+            event.preventDefault()
+            const response = await fetch('http://127.0.0.1:8090/all')
+            const body = await response.text()
+            const results = JSON.parse(body)
+            results.innerHTML = body
+            genAlbum(results)
+          })
+        } else {
+          genAlbum(results)
+        }
+      } else {
+        const resultsDiv = document.getElementById('search_results')
+        resultsDiv.setAttribute('class', 'jumbotron')
+        const message = document.createElement('h4')
+        message.setAttribute('align', 'center')
+        message.innerHTML = 'No Search Term Entered'
+        const button = document.createElement('button')
+        button.setAttribute('type', 'button')
+        button.setAttribute('class', 'btn btn-primary btn-block')
+        button.innerHTML = 'Return to show all posts'
+        resultsDiv.append(message)
+        resultsDiv.append(button)
+        button.addEventListener('click', async function (event) {
+          event.preventDefault()
+          const response = await fetch('http://127.0.0.1:8090/all')
+          const body = await response.text()
+          const results = JSON.parse(body)
+          results.innerHTML = body
+          genAlbum(results)
+        })
+      }
+    } catch (error) {
+      handleError(error)
+    }
+  })
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -753,7 +803,35 @@ async function userSearch () {
           genAlbum(results);
         });
       } else {
-        genAlbum(results);
+        const div = document.getElementById('intro');
+
+  for (const result of results) {
+    const div4 = document.createElement('div');
+    div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
+    const div5 = document.createElement('div');
+    div5.setAttribute('class', 'card mb-4 box-shadow bg-secondary text-white');
+    const item = document.createElement('h5');
+    const image = document.createElement('img');
+    item.setAttribute('id', result.User);
+    item.setAttribute('align', 'center');
+    item.innerHTML = result.User;
+    image.setAttribute('src', result.pic);
+    image.setAttribute('height', '120px');
+    image.setAttribute('width', '120px');
+    image.setAttribute('align', 'middle');
+    image.setAttribute('class', 'rounded-circle');
+    const centre = document.createElement('center');
+    centre.append(image);
+    div5.append(centre);
+    div5.append(item);
+    div5.onclick = function () {
+      var name = item.id;
+      view(name);
+    };
+    div4.append(div5);
+    div.append(div4);
+  }
+        
       }
     } else {
       const resultsDiv = document.getElementById('search_results');
@@ -811,6 +889,9 @@ async function viewAllUsers () {
     div4.append(div5);
     div.append(div4);
   }
+}
+function view(user){
+  alert(user)
 }
 // when loaded, show accounts and allow user to create new account
 window.addEventListener('load', async function (event) {
