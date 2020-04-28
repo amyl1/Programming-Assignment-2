@@ -1,180 +1,12 @@
-// complete this
-function handleError (error) {
-  clearAll();
-  const resultsDiv = document.getElementById('search_results');
-  resultsDiv.setAttribute('class', 'jumbotron');
-  const message = document.createElement('h4');
-  message.setAttribute('align', 'center');
-  message.innerHTML = 'Oops! An error has occured.';
-  const err = document.createElement('p');
-  err.setAttribute('align', 'center');
-  err.innerHTML = 'The error was: ' + error;
-  const button = document.createElement('button');
-  button.setAttribute('type', 'button');
-  button.setAttribute('class', 'btn btn-primary btn-block');
-  button.innerHTML = 'Return to show all posts';
-  resultsDiv.append(message);
-  resultsDiv.append(err);
-  resultsDiv.append(button);
-  button.addEventListener('click', async function (event) {
-    event.preventDefault();
-    const response = await fetch('http://127.0.0.1:8090/all');
-    const body = await response.text();
-    const results = JSON.parse(body);
-    results.innerHTML = body;
-    genAlbum(results);
-  });
-}
-
-// empties all divs so that page is cleared before new items are generated
-function clearAll () {
-  const resultsDiv = document.getElementById('search_results');
-  resultsDiv.innerHTML = '';
-  resultsDiv.setAttribute('class', 'row');
-  const upload = document.getElementById('upload_div');
-  upload.innerHTML = '';
-  const intro = document.getElementById('intro');
-  intro.setAttribute('class', 'row');
-  intro.innerHTML = '';
-  const successDiv = document.getElementById('success_div');
-  successDiv.innerHTML = '';
-  const form = document.getElementById('form');
-  form.innerHTML = '';
-  const post = document.getElementById('post');
-  post.innerHTML = '';
-  const comment = document.getElementById('comment');
-  comment.innerHTML = '';
-  comment.setAttribute('class', 'row');
-  const button = document.getElementById('button');
-  button.innerHTML = '';
-  button.setAttribute('class', 'row');
-  const jumbo = document.getElementById('jumbo');
-  jumbo.innerHTML = '';
-}
-function navBar () {
-  const nav = document.getElementById('navbar');
-  const home = document.createElement('a');
-  home.setAttribute('class', 'navbar-brand');
-  home.innerHTML = 'Travel Photos';
-  const button = document.createElement('button');
-  button.setAttribute('type', 'buttton');
-  button.setAttribute('class', 'navbar-toggler');
-  button.setAttribute('data-toggle', 'collapse');
-  button.setAttribute('data-target', '#navbarCollapse');
-  const span = document.createElement('span');
-  span.setAttribute('class', 'navbar-toggler-icon');
-  button.append(span);
-  const div1 = document.createElement('div');
-  div1.setAttribute('class', 'collapse navbar-collapse');
-  div1.setAttribute('id', 'navbarCollapse');
-  const div2 = document.createElement('div');
-  div2.setAttribute('class', 'navbar-nav');
-  const all = document.createElement('a');
-  all.setAttribute('class', 'nav-item nav-link');
-  all.setAttribute('id', 'all');
-  all.innerHTML = 'Show All Posts';
-  const upload = document.createElement('a');
-  upload.setAttribute('class', 'nav-item nav-link');
-  upload.setAttribute('id', 'upload');
-  upload.innerHTML = 'Upload New Post';
-  const searchUsers = document.createElement('a');
-  searchUsers.setAttribute('class', 'nav-item nav-link');
-  searchUsers.setAttribute('id', 'searchUsers');
-  searchUsers.innerHTML = 'Search Users';
-  const viewUsers = document.createElement('a');
-  viewUsers.setAttribute('class', 'nav-item nav-link');
-  viewUsers.setAttribute('id', 'viewUsers');
-  viewUsers.innerHTML = 'All users';
-  div2.append(all);
-  div2.append(upload);
-  div2.append(searchUsers);
-  div2.append(viewUsers);
-  const form = document.createElement('form');
-  form.setAttribute('id', 'search');
-  form.setAttribute('action', '/search');
-  form.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
-  const in1 = document.createElement('input');
-  in1.setAttribute('class', 'form-control form-control-sm ml-3 w-75');
-  in1.setAttribute('name', 'keyword');
-  in1.setAttribute('type', 'text');
-  in1.setAttribute('id', 'search_keyword');
-  in1.setAttribute('placeholder', 'Search For:');
-  form.append(in1);
-  const div3 = document.createElement('div');
-  const div4 = document.createElement('div');
-  div4.setAttribute('class', 'profile-userpic');
-  div4.setAttribute('id', 'user');
-  const div5 = document.createElement('div');
-  div5.setAttribute('class', 'profile-usertitle');
-  const div6 = document.createElement('div');
-  div6.setAttribute('class', 'profile-usertitle-name');
-  div6.setAttribute('id', 'name');
-  const text = document.createElement('p');
-  text.setAttribute('id', 'username');
-  div6.append(text);
-  div1.append(div2);
-  div1.append(form);
-  div3.append(div4);
-  div3.append(div5);
-  div5.append(div6);
-  nav.append(home);
-  nav.append(button);
-  nav.append(div1);
-  nav.append(div3);
-
-// Generate all
-
-all.addEventListener('click', async function (event) {
+// when loaded, call the user login function
+window.addEventListener('load', async function () {
   try {
-    event.preventDefault();
-    showAll();
+    userlogin();
   } catch (error) {
     handleError(error);
   }
 });
-
-// upload new post
-upload.addEventListener('click', async function (event) {
-  try {
-    event.preventDefault();
-    clearAll();
-    genUploadForm();
-  } catch (error) {
-    handleError(error);
-  }
-});
-
-searchUsers.addEventListener('click', async function (event) {
-  try {
-    event.preventDefault();
-    clearAll();
-    userSearch();
-  } catch (error) {
-    handleError(error);
-  }
-});
-viewUsers.addEventListener('click', async function (event) {
-  try {
-    event.preventDefault();
-    clearAll();
-    viewAllUsers();
-  } catch (error) {
-    handleError(error);
-  }
-});
-
-const searchForm = document.getElementById('search');
-searchForm.addEventListener('submit', async function (event) {
-    try {
-      event.preventDefault();
-      clearAll();
-      searchPosts();
-    } catch (error) {
-      handleError(error);
-    }
-  });
-}
-// when user account is selected, put id and pic in nav bar. When logged in, show all posts
+// Shows list of all user accounts created so far. Allows user to create a new account. When account selected, calls the login function
 async function userlogin () {
   clearAll();
   const response = await fetch('http://127.0.0.1:8090/accounts');
@@ -280,6 +112,7 @@ async function userlogin () {
     });
   };
 }
+// when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function login (name) {
   navBar();
   const login = document.getElementById('user');
@@ -301,11 +134,197 @@ async function login (name) {
   results.innerHTML = body2;
   genAlbum(results);
 }
-// creates items for each post in posts.json
+// This function is use in all the try, catch statements.
+// It displays a message to the user, informing them that an error has occured and what the error was.
+function handleError (error) {
+  clearAll();
+  const resultsDiv = document.getElementById('search_results');
+  resultsDiv.setAttribute('class', 'jumbotron');
+  const message = document.createElement('h4');
+  message.setAttribute('align', 'center');
+  message.innerHTML = 'Oops! An error has occured.';
+  const err = document.createElement('p');
+  err.setAttribute('align', 'center');
+  err.innerHTML = 'The error was: ' + error;
+  const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.setAttribute('class', 'btn btn-primary btn-block');
+  button.innerHTML = 'Return to show all posts';
+  resultsDiv.append(message);
+  resultsDiv.append(err);
+  resultsDiv.append(button);
+  // gives the user an option to return to show all posts when an error has occured
+  button.addEventListener('click', async function (event) {
+    event.preventDefault();
+    const response = await fetch('http://127.0.0.1:8090/all');
+    const body = await response.text();
+    const results = JSON.parse(body);
+    results.innerHTML = body;
+    genAlbum(results);
+  });
+}
+
+// Empties all divs so that page is cleared before new items are generated. Also resets the class of some divs so the background colour returns to white
+function clearAll () {
+  const resultsDiv = document.getElementById('search_results');
+  resultsDiv.innerHTML = '';
+  resultsDiv.setAttribute('class', 'row');
+  const upload = document.getElementById('upload_div');
+  upload.innerHTML = '';
+  const intro = document.getElementById('intro');
+  intro.setAttribute('class', 'row');
+  intro.innerHTML = '';
+  const successDiv = document.getElementById('success_div');
+  successDiv.innerHTML = '';
+  const form = document.getElementById('form');
+  form.innerHTML = '';
+  const post = document.getElementById('post');
+  post.innerHTML = '';
+  const comment = document.getElementById('comment');
+  comment.innerHTML = '';
+  comment.setAttribute('class', 'row');
+  const button = document.getElementById('button');
+  button.innerHTML = '';
+  button.setAttribute('class', 'row');
+  const jumbo = document.getElementById('jumbo');
+  jumbo.innerHTML = '';
+}
+
+// Generate the nav bar which appears once the user has logged in. Also calls the required functions when the user clicks on something on the bar.
+function navBar () {
+  // creates navbar and makes responsive to window size.
+  const nav = document.getElementById('navbar');
+  const home = document.createElement('a');
+  home.setAttribute('class', 'navbar-brand');
+  home.innerHTML = 'Travel Photos';
+  const button = document.createElement('button');
+  button.setAttribute('type', 'buttton');
+  button.setAttribute('class', 'navbar-toggler');
+  button.setAttribute('data-toggle', 'collapse');
+  button.setAttribute('data-target', '#navbarCollapse');
+  const span = document.createElement('span');
+  span.setAttribute('class', 'navbar-toggler-icon');
+  button.append(span);
+  const div1 = document.createElement('div');
+  div1.setAttribute('class', 'collapse navbar-collapse');
+  div1.setAttribute('id', 'navbarCollapse');
+  const div2 = document.createElement('div');
+  div2.setAttribute('class', 'navbar-nav');
+  const all = document.createElement('a');
+  // creates the links on the navbar
+  all.setAttribute('class', 'nav-item nav-link');
+  all.setAttribute('id', 'all');
+  all.innerHTML = 'Show All Posts';
+  const upload = document.createElement('a');
+  upload.setAttribute('class', 'nav-item nav-link');
+  upload.setAttribute('id', 'upload');
+  upload.innerHTML = 'Upload New Post';
+  const searchUsers = document.createElement('a');
+  searchUsers.setAttribute('class', 'nav-item nav-link');
+  searchUsers.setAttribute('id', 'searchUsers');
+  searchUsers.innerHTML = 'Search Users';
+  const viewUsers = document.createElement('a');
+  viewUsers.setAttribute('class', 'nav-item nav-link');
+  viewUsers.setAttribute('id', 'viewUsers');
+  viewUsers.innerHTML = 'All users';
+  div2.append(all);
+  div2.append(upload);
+  div2.append(searchUsers);
+  div2.append(viewUsers);
+  // creates search posts form
+  const form = document.createElement('form');
+  form.setAttribute('id', 'search');
+  form.setAttribute('action', '/search');
+  form.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
+  const in1 = document.createElement('input');
+  in1.setAttribute('class', 'form-control form-control-sm ml-3 w-75');
+  in1.setAttribute('name', 'keyword');
+  in1.setAttribute('type', 'text');
+  in1.setAttribute('id', 'search_keyword');
+  in1.setAttribute('placeholder', 'Search For:');
+  form.append(in1);
+  const div3 = document.createElement('div');
+  const div4 = document.createElement('div');
+  div4.setAttribute('class', 'profile-userpic');
+  div4.setAttribute('id', 'user');
+  const div5 = document.createElement('div');
+  div5.setAttribute('class', 'profile-usertitle');
+  const div6 = document.createElement('div');
+  div6.setAttribute('class', 'profile-usertitle-name');
+  div6.setAttribute('id', 'name');
+  const text = document.createElement('p');
+  text.setAttribute('id', 'username');
+  // appends the respective sections to the navbar and the navbar to the page.
+  div6.append(text);
+  div1.append(div2);
+  div1.append(form);
+  div3.append(div4);
+  div3.append(div5);
+  div5.append(div6);
+  nav.append(home);
+  nav.append(button);
+  nav.append(div1);
+  nav.append(div3);
+
+// Used for show all posts. Calls the showAll function. Event listener on nav bar link. Event listener on nav bar link.
+all.addEventListener('click', async function (event) {
+  try {
+    event.preventDefault();
+    showAll();
+  } catch (error) {
+    handleError(error);
+  }
+});
+
+// Used for upload a new post. Calls the genUploadForm function. Event listener on nav bar link.
+upload.addEventListener('click', async function (event) {
+  try {
+    event.preventDefault();
+    clearAll();
+    genUploadForm();
+  } catch (error) {
+    handleError(error);
+  }
+});
+// Used for search user. Calls the userSearch function. Event listener on nav bar link.
+searchUsers.addEventListener('click', async function (event) {
+  try {
+    event.preventDefault();
+    clearAll();
+    userSearch();
+  } catch (error) {
+    handleError(error);
+  }
+});
+// Used for search user. Calls the viewAllUsers function. Event listener on nav bar link.
+viewUsers.addEventListener('click', async function (event) {
+  try {
+    event.preventDefault();
+    clearAll();
+    viewAllUsers();
+  } catch (error) {
+    handleError(error);
+  }
+});
+// Adds event listener for when the search posts form is submitted. Calls the searchPosts function.
+const searchForm = document.getElementById('search');
+searchForm.addEventListener('submit', async function (event) {
+    try {
+      event.preventDefault();
+      clearAll();
+      searchPosts();
+    } catch (error) {
+      handleError(error);
+    }
+  });
+}
+
+// creates album items for the posts returned as the result from app.js
 function genAlbum (results) {
   try {
     clearAll();
     const resultsDiv = document.getElementById('search_results');
+    // create one div for each item in the result.
     for (const result of results) {
       const div1 = document.createElement('div');
       div1.setAttribute('class', 'col-sm-12 col-md-6 col-lg-4 col-xl-3');
@@ -352,11 +371,13 @@ function genAlbum (results) {
       heading.innerHTML = 'Comments:';
       div1.append(heading);
       const comments = result.comments;
+      // if no comments, display this to the user.
       if (comments.length === 0) {
         const message = document.createElement('p');
         message.innerHTML = 'No comments yet';
         div1.append(message);
       } else {
+        // display all the comments added to a post.
         for (const comment in comments) {
           const p = document.createElement('p');
           const node = document.createTextNode(comments[comment]);
@@ -370,7 +391,7 @@ function genAlbum (results) {
     handleError(error);
   }
 }
-// When view post button is clicked, load post full screen
+// When view post button is clicked, load post full screen.
 async function viewpost (title) {
   clearAll();
   const resultsDiv = document.getElementById('post');
@@ -457,7 +478,7 @@ async function viewpost (title) {
   div1.append(div2);
   resultsDiv.append(div1);
 }
-// Allows the user to comment
+// Allows the user to add a comment to a post that already exists. Called from comment button when posts are displayed.
 async function comment (title) {
   try {
     clearAll();
@@ -532,10 +553,11 @@ async function comment (title) {
     handleError(error);
   }
 }
-
+// The user can request to delete a post. Authentication is included so that you can only delete posts that you have uploaded. Called from delete button when posts are displayed.
 async function deletepost (title) {
   try {
     clearAll();
+    // gets the username of the person who is logged in from the profile in the navbar.
     const loggedin = document.getElementById('username').textContent;
     const data = { title: title, loggedin: loggedin };
     const response = await fetch('http://127.0.0.1:8090/delete'
@@ -551,6 +573,7 @@ async function deletepost (title) {
         referrer: 'no-referrer',
         body: JSON.stringify(data)
       });
+    // if response from the server is okay, the post will have been deleted so display success message to the user.
     if (response.ok) {
       clearAll();
       const main = document.getElementById('jumbo');
@@ -563,6 +586,7 @@ async function deletepost (title) {
       text.setAttribute('class', 'lead');
       text.setAttribute('align', 'center');
       text.innerHTML = 'Post Successfully Deleted.';
+      // give user option to return to show all posts.
       const button2 = document.createElement('button');
       button2.setAttribute('type', 'button');
       button2.setAttribute('class', 'btn btn-primary btn-block');
@@ -580,13 +604,57 @@ async function deletepost (title) {
       div.append(button2);
       main.append(div);
     } else {
+      // if error occurs, the user will be forbidden from deleting this item. Therefore, call error handling function.
       handleError('You are not permitted to perform this action');
     }
   } catch (error) {
     handleError(error);
   }
 }
-
+// Allows user to search all posts. Called when search form in nav bar is submitted.
+async function searchPosts () {
+  const keyword = document.getElementById('search_keyword').value;
+  const resultsDiv = document.getElementById('search_results');
+          resultsDiv.setAttribute('class', 'jumbotron');
+      // if a search term is entered
+          if (keyword) {
+        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword);
+        const body = await response.text();
+        const results = JSON.parse(body);
+        results.innerHTML = body;
+        // if no matching posts are found, display a message to the user
+        if (results === undefined || results.length === 0) {
+          const message = document.createElement('h4');
+          message.setAttribute('align', 'center');
+          message.innerHTML = 'No matching posts';
+          resultsDiv.append(message);
+        } else {
+          // call genAlbum function on the matching posts returned from the server.
+          genAlbum(results);
+        }
+      } else {
+        // if no search term is entered, display a message to the user
+        const message = document.createElement('h4');
+        message.setAttribute('align', 'center');
+        message.innerHTML = 'No Search Term Entered';
+        resultsDiv.append(message);
+      }
+      // gives user the option to return to all posts
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'btn btn-primary btn-block');
+      button.innerHTML = 'Return to show all posts';
+      resultsDiv.append(button);
+        button.addEventListener('click', async function (event) {
+          event.preventDefault();
+          const response = await fetch('http://127.0.0.1:8090/all');
+          const body = await response.text();
+          const results = JSON.parse(body);
+          results.innerHTML = body;
+          genAlbum(results);
+        });
+}
+// called from show all posts on navbar. Generates album for all posts in the posts.json file.
 async function showAll () {
     const response = await fetch('http://127.0.0.1:8090/all');
     const body = await response.text();
@@ -594,6 +662,7 @@ async function showAll () {
     results.innerHTML = body;
     genAlbum(results);
 }
+// called from upload new posts on navbar. Authentication to check a post with the same title doesn't already exist.
 async function genUploadForm () {
   const uploadDiv = document.getElementById('upload_div');
     const h = document.createElement('h2');
@@ -664,6 +733,7 @@ async function genUploadForm () {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         });
+        // if no error occurs, show the user a message saying that the post has been uploaded.
       if (response.ok) {
         const main = document.getElementById('jumbo');
         const div = document.createElement('div');
@@ -675,6 +745,7 @@ async function genUploadForm () {
         text.setAttribute('class', 'lead');
         text.setAttribute('align', 'center');
         text.innerHTML = 'Your post has been successfully uploaded.';
+        // Gives the user the option to return to show all posts
         const button2 = document.createElement('button');
         button2.setAttribute('type', 'button');
         button2.setAttribute('class', 'btn btn-primary btn-block');
@@ -692,13 +763,16 @@ async function genUploadForm () {
         div.append(button2);
         main.append(div);
       } else {
+        // if error occurs, a post with the same title exists. Calls handle error function
         handleError('A post with that title already exists');
     };
     });
 }
+// called when search for a user is pressed on the navbar.
 async function userSearch () {
   const div = document.getElementById('intro');
     div.setAttribute('class', 'jumbotron');
+    // generates a search form
     var uSearch = document.createElement('form');
     uSearch.setAttribute('id', 'search');
     uSearch.setAttribute('action', '/searchUser');
@@ -722,38 +796,29 @@ async function userSearch () {
     uSearch.append(i);
     uSearch.append(c);
     div.append(uSearch);
+    // when search form is submitted
     uSearch.addEventListener('submit', async function (event) {
       event.preventDefault();
       const name = i.value;
+      const resultsDiv = document.getElementById('search_results');
     clearAll();
+    // if search term is entered
     if (name) {
       const response = await fetch('http://127.0.0.1:8090/searchUser?name=' + name);
       const body = await response.text();
       const results = JSON.parse(body);
       results.innerHTML = body;
+      // if no matching results, display a message to the user
       if (results === undefined || results.length === 0) {
         const resultsDiv = document.getElementById('search_results');
         resultsDiv.setAttribute('class', 'jumbotron');
         const message = document.createElement('h4');
         message.setAttribute('align', 'center');
         message.innerHTML = 'No matching users';
-        const button = document.createElement('button');
-        button.setAttribute('type', 'button');
-        button.setAttribute('class', 'btn btn-primary btn-block');
-        button.innerHTML = 'Return to show all posts';
         resultsDiv.append(message);
-        resultsDiv.append(button);
-        button.addEventListener('click', async function (event) {
-          event.preventDefault();
-          const response = await fetch('http://127.0.0.1:8090/all');
-          const body = await response.text();
-          const results = JSON.parse(body);
-          results.innerHTML = body;
-          genAlbum(results);
-        });
       } else {
+        // generate a profile for each of the matching users
         const div = document.getElementById('intro');
-
   for (const result of results) {
     const div4 = document.createElement('div');
     div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
@@ -773,6 +838,7 @@ async function userSearch () {
     centre.append(image);
     div5.append(centre);
     div5.append(item);
+    // if user clicks on a user, call the view user fuction
     div5.onclick = function () {
       var name = item.id;
       view(name);
@@ -782,35 +848,37 @@ async function userSearch () {
   }
       }
     } else {
-      const resultsDiv = document.getElementById('search_results');
+      // if no search term entered, display a message to the user
       resultsDiv.setAttribute('class', 'jumbotron');
       const message = document.createElement('h4');
       message.setAttribute('align', 'center');
       message.innerHTML = 'No Search Term Entered';
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.setAttribute('class', 'btn btn-primary btn-block');
-      button.innerHTML = 'Return to show all posts';
       resultsDiv.append(message);
-      resultsDiv.append(button);
-      button.addEventListener('click', async function (event) {
-        event.preventDefault();
-        const response = await fetch('http://127.0.0.1:8090/all');
-        const body = await response.text();
-        const results = JSON.parse(body);
-        results.innerHTML = body;
-        genAlbum(results);
-      });
     }
+    // gives the user an option to return to show all postw
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'btn btn-primary btn-block');
+    button.innerHTML = 'Return to show all posts';
+    resultsDiv.append(button);
+    button.addEventListener('click', async function (event) {
+      event.preventDefault();
+      const response = await fetch('http://127.0.0.1:8090/all');
+      const body = await response.text();
+      const results = JSON.parse(body);
+      results.innerHTML = body;
+      genAlbum(results);
+    });
   });
 };
+// called when search for a user is pressed on the navbar.
 async function viewAllUsers () {
   const response = await fetch('http://127.0.0.1:8090/accounts');
   const body = await response.text();
   const results = JSON.parse(body);
   results.innerHTML = body;
   const div = document.getElementById('intro');
-
+  // generates a profile for all the user accounts in the accounts.json profile
   for (const result of results) {
     const div4 = document.createElement('div');
     div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
@@ -838,11 +906,13 @@ async function viewAllUsers () {
     div.append(div4);
   }
 }
+// when a user profile is selected from either userSearch or viewAllUsers, show all posts uploaded by that user
 async function view (user) {
   const response = await fetch('http://127.0.0.1:8090/viewProfile?name=' + user);
   const body = await response.text();
   const results = JSON.parse(body);
   results.innerHTML = body;
+  // if no posts by selected user, display a message to the user.
   if (results === undefined || results.length === 0) {
     clearAll();
     const resultsDiv = document.getElementById('search_results');
@@ -867,49 +937,4 @@ async function view (user) {
   } else {
       genAlbum(results);
     }
-}
-// when loaded, show accounts and allow user to create new account
-window.addEventListener('load', async function (event) {
-  try {
-    userlogin();
-  } catch (error) {
-    handleError(error);
-  }
-});
-async function searchPosts () {
-  const keyword = document.getElementById('search_keyword').value;
-  const resultsDiv = document.getElementById('search_results');
-          resultsDiv.setAttribute('class', 'jumbotron');
-      if (keyword) {
-        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword);
-        const body = await response.text();
-        const results = JSON.parse(body);
-        results.innerHTML = body;
-        if (results === undefined || results.length === 0) {
-          const message = document.createElement('h4');
-          message.setAttribute('align', 'center');
-          message.innerHTML = 'No matching posts';
-          resultsDiv.append(message);
-        } else {
-          genAlbum(results);
-        }
-      } else {
-        const message = document.createElement('h4');
-        message.setAttribute('align', 'center');
-        message.innerHTML = 'No Search Term Entered';
-        resultsDiv.append(message);
-      }
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.setAttribute('class', 'btn btn-primary btn-block');
-      button.innerHTML = 'Return to show all posts';
-      resultsDiv.append(button);
-        button.addEventListener('click', async function (event) {
-          event.preventDefault();
-          const response = await fetch('http://127.0.0.1:8090/all');
-          const body = await response.text();
-          const results = JSON.parse(body);
-          results.innerHTML = body;
-          genAlbum(results);
-        });
 }
