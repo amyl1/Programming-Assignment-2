@@ -478,6 +478,38 @@ async function viewpost (title) {
   div1.append(div2);
   resultsDiv.append(div1);
 }
+// when a user profile is selected from either userSearch or viewAllUsers, show all posts uploaded by that user
+async function view (user) {
+  const response = await fetch('http://127.0.0.1:8090/viewProfile?name=' + user);
+  const body = await response.text();
+  const results = JSON.parse(body);
+  results.innerHTML = body;
+  // if no posts by selected user, display a message to the user.
+  if (results === undefined || results.length === 0) {
+    clearAll();
+    const resultsDiv = document.getElementById('search_results');
+    resultsDiv.setAttribute('class', 'jumbotron');
+    const message = document.createElement('h4');
+    message.setAttribute('align', 'center');
+    message.innerHTML = 'No posts by this user';
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'btn btn-primary btn-block');
+    button.innerHTML = 'Return to show all posts';
+    resultsDiv.append(message);
+    resultsDiv.append(button);
+    button.addEventListener('click', async function (event) {
+      event.preventDefault();
+      const response = await fetch('http://127.0.0.1:8090/all');
+      const body = await response.text();
+      const results = JSON.parse(body);
+      results.innerHTML = body;
+      genAlbum(results);
+    });
+  } else {
+      genAlbum(results);
+    }
+}
 // Allows the user to add a comment to a post that already exists. Called from comment button when posts are displayed.
 async function comment (title) {
   try {
@@ -610,49 +642,6 @@ async function deletepost (title) {
   } catch (error) {
     handleError(error);
   }
-}
-// Allows user to search all posts. Called when search form in nav bar is submitted.
-async function searchPosts () {
-  const keyword = document.getElementById('search_keyword').value;
-  const resultsDiv = document.getElementById('search_results');
-          resultsDiv.setAttribute('class', 'jumbotron');
-      // if a search term is entered
-          if (keyword) {
-        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword);
-        const body = await response.text();
-        const results = JSON.parse(body);
-        results.innerHTML = body;
-        // if no matching posts are found, display a message to the user
-        if (results === undefined || results.length === 0) {
-          const message = document.createElement('h4');
-          message.setAttribute('align', 'center');
-          message.innerHTML = 'No matching posts';
-          resultsDiv.append(message);
-        } else {
-          // call genAlbum function on the matching posts returned from the server.
-          genAlbum(results);
-        }
-      } else {
-        // if no search term is entered, display a message to the user
-        const message = document.createElement('h4');
-        message.setAttribute('align', 'center');
-        message.innerHTML = 'No Search Term Entered';
-        resultsDiv.append(message);
-      }
-      // gives user the option to return to all posts
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.setAttribute('class', 'btn btn-primary btn-block');
-      button.innerHTML = 'Return to show all posts';
-      resultsDiv.append(button);
-        button.addEventListener('click', async function (event) {
-          event.preventDefault();
-          const response = await fetch('http://127.0.0.1:8090/all');
-          const body = await response.text();
-          const results = JSON.parse(body);
-          results.innerHTML = body;
-          genAlbum(results);
-        });
 }
 // called from show all posts on navbar. Generates album for all posts in the posts.json file.
 async function showAll () {
@@ -906,35 +895,46 @@ async function viewAllUsers () {
     div.append(div4);
   }
 }
-// when a user profile is selected from either userSearch or viewAllUsers, show all posts uploaded by that user
-async function view (user) {
-  const response = await fetch('http://127.0.0.1:8090/viewProfile?name=' + user);
-  const body = await response.text();
-  const results = JSON.parse(body);
-  results.innerHTML = body;
-  // if no posts by selected user, display a message to the user.
-  if (results === undefined || results.length === 0) {
-    clearAll();
-    const resultsDiv = document.getElementById('search_results');
-    resultsDiv.setAttribute('class', 'jumbotron');
-    const message = document.createElement('h4');
-    message.setAttribute('align', 'center');
-    message.innerHTML = 'No posts by this user';
-    const button = document.createElement('button');
-    button.setAttribute('type', 'button');
-    button.setAttribute('class', 'btn btn-primary btn-block');
-    button.innerHTML = 'Return to show all posts';
-    resultsDiv.append(message);
-    resultsDiv.append(button);
-    button.addEventListener('click', async function (event) {
-      event.preventDefault();
-      const response = await fetch('http://127.0.0.1:8090/all');
-      const body = await response.text();
-      const results = JSON.parse(body);
-      results.innerHTML = body;
-      genAlbum(results);
-    });
-  } else {
-      genAlbum(results);
-    }
+// Allows user to search all posts. Called when search form in nav bar is submitted.
+async function searchPosts () {
+  const keyword = document.getElementById('search_keyword').value;
+  const resultsDiv = document.getElementById('search_results');
+          resultsDiv.setAttribute('class', 'jumbotron');
+      // if a search term is entered
+          if (keyword) {
+        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword);
+        const body = await response.text();
+        const results = JSON.parse(body);
+        results.innerHTML = body;
+        // if no matching posts are found, display a message to the user
+        if (results === undefined || results.length === 0) {
+          const message = document.createElement('h4');
+          message.setAttribute('align', 'center');
+          message.innerHTML = 'No matching posts';
+          resultsDiv.append(message);
+        } else {
+          // call genAlbum function on the matching posts returned from the server.
+          genAlbum(results);
+        }
+      } else {
+        // if no search term is entered, display a message to the user
+        const message = document.createElement('h4');
+        message.setAttribute('align', 'center');
+        message.innerHTML = 'No Search Term Entered';
+        resultsDiv.append(message);
+      }
+      // gives user the option to return to all posts
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'btn btn-primary btn-block');
+      button.innerHTML = 'Return to show all posts';
+      resultsDiv.append(button);
+        button.addEventListener('click', async function (event) {
+          event.preventDefault();
+          const response = await fetch('http://127.0.0.1:8090/all');
+          const body = await response.text();
+          const results = JSON.parse(body);
+          results.innerHTML = body;
+          genAlbum(results);
+        });
 }
