@@ -163,65 +163,16 @@ viewUsers.addEventListener('click', async function (event) {
   }
 });
 
-const searchForm=document.getElementById('search')
-searchForm.addEventListener('submit',async function(event){
+const searchForm = document.getElementById('search');
+searchForm.addEventListener('submit', async function (event) {
     try {
-      event.preventDefault()
-      clearAll()
-      const keyword = document.getElementById('search_keyword').value
-      if (keyword) {
-        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword)
-        const body = await response.text()
-        const results = JSON.parse(body)
-        results.innerHTML = body
-        if (results === undefined || results.length === 0) {
-          const resultsDiv = document.getElementById('search_results')
-          resultsDiv.setAttribute('class', 'jumbotron')
-          const message = document.createElement('h4')
-          message.setAttribute('align', 'center')
-          message.innerHTML = 'No matching posts'
-          const button = document.createElement('button')
-          button.setAttribute('type', 'button')
-          button.setAttribute('class', 'btn btn-primary btn-block')
-          button.innerHTML = 'Return to show all posts'
-          resultsDiv.append(message)
-          resultsDiv.append(button)
-          button.addEventListener('click', async function (event) {
-            event.preventDefault()
-            const response = await fetch('http://127.0.0.1:8090/all')
-            const body = await response.text()
-            const results = JSON.parse(body)
-            results.innerHTML = body
-            genAlbum(results)
-          })
-        } else {
-          genAlbum(results)
-        }
-      } else {
-        const resultsDiv = document.getElementById('search_results')
-        resultsDiv.setAttribute('class', 'jumbotron')
-        const message = document.createElement('h4')
-        message.setAttribute('align', 'center')
-        message.innerHTML = 'No Search Term Entered'
-        const button = document.createElement('button')
-        button.setAttribute('type', 'button')
-        button.setAttribute('class', 'btn btn-primary btn-block')
-        button.innerHTML = 'Return to show all posts'
-        resultsDiv.append(message)
-        resultsDiv.append(button)
-        button.addEventListener('click', async function (event) {
-          event.preventDefault()
-          const response = await fetch('http://127.0.0.1:8090/all')
-          const body = await response.text()
-          const results = JSON.parse(body)
-          results.innerHTML = body
-          genAlbum(results)
-        })
-      }
+      event.preventDefault();
+      clearAll();
+      searchPosts();
     } catch (error) {
-      handleError(error)
+      handleError(error);
     }
-  })
+  });
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function userlogin () {
@@ -745,7 +696,6 @@ async function genUploadForm () {
     };
     });
 }
-
 async function userSearch () {
   const div = document.getElementById('intro');
     div.setAttribute('class', 'jumbotron');
@@ -757,26 +707,25 @@ async function userSearch () {
     i.setAttribute('class', 'form-control form-control-sm ml-3 w-100');
     i.setAttribute('name', 'name');
     i.setAttribute('type', 'text');
-    i.setAttribute('id', 'searchUser');
+    i.setAttribute('id', 'user');
     i.setAttribute('placeholder', 'Search For:');
     const l = document.createElement('label');
     l.setAttribute('for', 'name');
     l.innerHTML = 'Enter the name of the user you wish to search for:';
     const c = document.createElement('center');
     const b = document.createElement('button');
-    b.setAttribute('type', 'button');
+    b.setAttribute('type', 'submit');
     b.setAttribute('class', 'btn btn-primary');
-    b.setAttribute('align', 'center');
     b.innerHTML = 'Search';
     c.append(b);
     uSearch.append(l);
     uSearch.append(i);
+    uSearch.append(c);
     div.append(uSearch);
-    div.append(c);
     uSearch.addEventListener('submit', async function (event) {
-    event.preventDefault();
+      event.preventDefault();
+      const name = i.value;
     clearAll();
-    const name = document.getElementById('searchUser').value;
     if (name) {
       const response = await fetch('http://127.0.0.1:8090/searchUser?name=' + name);
       const body = await response.text();
@@ -793,7 +742,7 @@ async function userSearch () {
         button.setAttribute('class', 'btn btn-primary btn-block');
         button.innerHTML = 'Return to show all posts';
         resultsDiv.append(message);
-        resultsDiv.append(search);
+        resultsDiv.append(button);
         button.addEventListener('click', async function (event) {
           event.preventDefault();
           const response = await fetch('http://127.0.0.1:8090/all');
@@ -831,7 +780,6 @@ async function userSearch () {
     div4.append(div5);
     div.append(div4);
   }
-        
       }
     } else {
       const resultsDiv = document.getElementById('search_results');
@@ -890,8 +838,35 @@ async function viewAllUsers () {
     div.append(div4);
   }
 }
-function view(user){
-  alert(user)
+async function view (user) {
+  const response = await fetch('http://127.0.0.1:8090/viewProfile?name=' + user);
+  const body = await response.text();
+  const results = JSON.parse(body);
+  results.innerHTML = body;
+  if (results === undefined || results.length === 0) {
+    clearAll();
+    const resultsDiv = document.getElementById('search_results');
+    resultsDiv.setAttribute('class', 'jumbotron');
+    const message = document.createElement('h4');
+    message.setAttribute('align', 'center');
+    message.innerHTML = 'No posts by this user';
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'btn btn-primary btn-block');
+    button.innerHTML = 'Return to show all posts';
+    resultsDiv.append(message);
+    resultsDiv.append(button);
+    button.addEventListener('click', async function (event) {
+      event.preventDefault();
+      const response = await fetch('http://127.0.0.1:8090/all');
+      const body = await response.text();
+      const results = JSON.parse(body);
+      results.innerHTML = body;
+      genAlbum(results);
+    });
+  } else {
+      genAlbum(results);
+    }
 }
 // when loaded, show accounts and allow user to create new account
 window.addEventListener('load', async function (event) {
@@ -901,3 +876,40 @@ window.addEventListener('load', async function (event) {
     handleError(error);
   }
 });
+async function searchPosts () {
+  const keyword = document.getElementById('search_keyword').value;
+  const resultsDiv = document.getElementById('search_results');
+          resultsDiv.setAttribute('class', 'jumbotron');
+      if (keyword) {
+        const response = await fetch('http://127.0.0.1:8090/search?keyword=' + keyword);
+        const body = await response.text();
+        const results = JSON.parse(body);
+        results.innerHTML = body;
+        if (results === undefined || results.length === 0) {
+          const message = document.createElement('h4');
+          message.setAttribute('align', 'center');
+          message.innerHTML = 'No matching posts';
+          resultsDiv.append(message);
+        } else {
+          genAlbum(results);
+        }
+      } else {
+        const message = document.createElement('h4');
+        message.setAttribute('align', 'center');
+        message.innerHTML = 'No Search Term Entered';
+        resultsDiv.append(message);
+      }
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'btn btn-primary btn-block');
+      button.innerHTML = 'Return to show all posts';
+      resultsDiv.append(button);
+        button.addEventListener('click', async function (event) {
+          event.preventDefault();
+          const response = await fetch('http://127.0.0.1:8090/all');
+          const body = await response.text();
+          const results = JSON.parse(body);
+          results.innerHTML = body;
+          genAlbum(results);
+        });
+}

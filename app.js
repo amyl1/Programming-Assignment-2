@@ -121,5 +121,14 @@ app.post('/newpost', (request, res) => {
       fs.writeFile('posts.json', json, 'utf8', console.log);
       res.send('Success');
 });
-
+app.get('/viewProfile', function (request, response) {
+  const name = request.query.name;
+  var matching = [];
+  for (let i = 0; i < posts.length; i++) {
+    if (posts[i].user===name) {
+      matching.push(posts[i]);
+    }
+  }
+  response.send(matching);
+});
 module.exports = app;
