@@ -1,7 +1,0 @@
-{
-    "name": "app.js",
-    "version": "1.0.0",
-    "description": "API documentation of app.js",
-    "title": "API Documentation",
-    "url" : "https://api.github.com/v1"
-  }

@@ -7,18 +7,17 @@ describe('Test /post to return details of post', () => {
         return request(app)
 	    .get('/post?title=Whitby')
 	    .expect(200);
-    })
+    });
     test('GET /post returns correct post details', () => {
         return request(app)
 	    .get('/post?title=Whitby')
 	    .expect(/Whitby/);
-    })
+    });
     test('GET /post returns JSON', () => {
         return request(app)
 	    .get('/post?title=Whitby')
 	    .expect('Content-type', /json/);
-    })
-    
+    });
 });
 
 describe('Test /pic to return URL of profile picture', () => {
@@ -26,22 +25,21 @@ describe('Test /pic to return URL of profile picture', () => {
         return request(app)
 	    .get('/pic?name=User 2')
 	    .expect(200);
-    })
+    });
     test('GET /pic returns correct URL', () => {
         return request(app)
 	    .get('/pic?name=User 2')
 	    .expect(/img.pngio.com/);
-    })
-    
+    });
 });
 
 describe('Test /newaccount to create a new user account', () => {
 test('POST /newaccount works', () => {
     const params = {
-        User:"Test User",
-        pic: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-    }
-    
+        User: 'Test User',
+        pic: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+    };
+
     return request(app)
     .post('/newaccount')
         .send(params)
@@ -50,28 +48,26 @@ test('POST /newaccount works', () => {
 
 test('POST /newaccount adds an account which can be accessed via GET', async () => {
     const params = {
-        User:"Test User",
-        pic: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-    }
-    
+        User: 'Test User',
+        pic: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+    };
+
     await request(app)
     .post('/newaccount')
-        .send(params)
+        .send(params);
     return request(app)
         .get('/searchUser?name=Test User')
         .expect(/Test User/);
-
-
 });
 });
 
 describe('Test /comment adds a new comment', () => {
 test('POST /comment successfully adds a comment', () => {
     const params = {
-        title:"Whitby",
-        comment: "Test comment",
-    }
-    
+        title: 'Whitby',
+        comment: 'Test comment'
+    };
+
     return request(app)
     .post('/comment')
         .send(params)
@@ -79,14 +75,13 @@ test('POST /comment successfully adds a comment', () => {
 });
 });
 
-
 describe('Test /delete works', () => {
     test('POST /delete authentication works', () => {
         const params = {
-            title:"Murano, Venice",
-            loggedin: "User 4",
-        }
-        
+            title: 'Murano, Venice',
+            loggedin: 'User 4'
+        };
+
         return request(app)
         .post('/delete')
             .send(params)
@@ -99,12 +94,12 @@ describe('Test get all posts', () => {
         return request(app)
 	    .get('/all')
 	    .expect(200);
-    })
+    });
     test('GET / all returns JSON', () => {
         return request(app)
 	    .get('/all')
 	    .expect('Content-type', /json/);
-    })
+    });
 });
 
 describe('Test get all accounts', () => {
@@ -112,12 +107,12 @@ describe('Test get all accounts', () => {
         return request(app)
 	    .get('/accounts')
 	    .expect(200);
-    })
+    });
     test('GET / accounts returns JSON', () => {
         return request(app)
 	    .get('/accounts')
 	    .expect('Content-type', /json/);
-    })
+    });
 });
 
 describe('Test search post functionality', () => {
@@ -125,18 +120,17 @@ describe('Test search post functionality', () => {
         return request(app)
 	    .get('/search?keyword=Rome')
 	    .expect(200);
-    })
+    });
     test('GET /search returns JSON', () => {
         return request(app)
 	    .get('/search?keyword=Rome')
 	    .expect('Content-type', /json/);
-    })
+    });
     test('GET /search returns correct results', () => {
         return request(app)
 	    .get('/search?keyword=Whitby')
 	    .expect(/Whitby/);
-    })
-    
+    });
 });
 
 describe('Test search user functionality', () => {
@@ -144,31 +138,30 @@ describe('Test search user functionality', () => {
         return request(app)
 	    .get('/searchUser?name=User 5')
 	    .expect(200);
-    })
+    });
     test('GET /searchUser returns JSON', () => {
         return request(app)
 	    .get('/searchUser?name=User 5')
 	    .expect('Content-type', /json/);
-    })
+    });
     test('GET /searchUser returns correct results', () => {
         return request(app)
 	    .get('/searchUser?name=User 5')
 	    .expect(/User 5/);
-    })
-    
+    });
 });
 
-describe('Tests upload new post', () =>{
-//this test will fail if the test is run multiple times. 
-//This is due to the authentication preventing multiple posts with the same title.
+describe('Tests upload new post', () => {
+// this test will fail if the test is run multiple times.
+// This is due to the authentication preventing multiple posts with the same title.
 test('POST /newpost works', () => {
         const params = {
-            user:"Test User",
-            title: "Test Post",
-            des: "Post added by testing",
-            image: "https://i.imgur.com/hAV6F86.jpg"
-        }
-        
+            user: 'Test User',
+            title: 'Test Post',
+            des: 'Post added by testing',
+            image: 'https://i.imgur.com/hAV6F86.jpg'
+        };
+
         return request(app)
         .post('/newpost')
             .send(params)
@@ -176,12 +169,12 @@ test('POST /newpost works', () => {
     });
 test('POST /newpost authentication works', () => {
     const params = {
-        user:"Test User",
-        title: "Whitby",
-        des: "Post added by testing",
-        image: "https://i.imgur.com/hAV6F86.jpg"
-    }
-    
+        user: 'Test User',
+        title: 'Whitby',
+        des: 'Post added by testing',
+        image: 'https://i.imgur.com/hAV6F86.jpg'
+    };
+
     return request(app)
     .post('/newpost')
         .send(params)
@@ -190,15 +183,15 @@ test('POST /newpost authentication works', () => {
 
 test('POST /newpost adds a post which can be accessed via GET', async () => {
     const params = {
-        user:"Test User",
-        title: "New test post 2",
-        des: "Post added by testing",
-        image: "https://i.imgur.com/hAV6F86.jpg"
-    }
-    
+        user: 'Test User',
+        title: 'New test post 2',
+        des: 'Post added by testing',
+        image: 'https://i.imgur.com/hAV6F86.jpg'
+    };
+
     await request(app)
     .post('/newpost')
-        .send(params)
+        .send(params);
     return request(app)
         .get('/search?keyword=New test post 2')
         .expect(/New test post 2/);
@@ -210,16 +203,15 @@ describe('Test /viewProfile to return details of a profile', () => {
         return request(app)
 	    .get('/viewProfile?name=User 5')
 	    .expect(200);
-    })
+    });
     test('GET /post returns correct post details', () => {
         return request(app)
 	    .get('/viewProfile?name=User 5')
 	    .expect(/User 5/);
-    })
+    });
     test('GET /post returns JSON', () => {
         return request(app)
 	    .get('/viewProfile?name=User 5')
 	    .expect('Content-type', /json/);
-    })
-    
+    });
 });
