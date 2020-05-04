@@ -1,3 +1,4 @@
+
 // when loaded, call the user login function
 window.addEventListener('load', async function () {
   try {
@@ -6,6 +7,19 @@ window.addEventListener('load', async function () {
     handleError(error);
   }
 });
+
+var xhttp= new XMLHttpRequest();
+try{
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 0) {
+      handleError('Server is not connected. Please refresh the page and try again.');
+    }
+  };
+  xhttp.open("GET", "http://127.0.0.1:8090/", true);
+  xhttp.send();
+}catch(error){
+  handleError(error);
+}
 // Shows list of all user accounts created so far. Allows user to create a new account. When account selected, calls the login function
 async function userlogin () {
   clearAll();
@@ -176,8 +190,6 @@ function clearAll () {
   intro.innerHTML = '';
   const successDiv = document.getElementById('success_div');
   successDiv.innerHTML = '';
-  const form = document.getElementById('form');
-  form.innerHTML = '';
   const post = document.getElementById('post');
   post.innerHTML = '';
   const comment = document.getElementById('comment');
@@ -333,7 +345,7 @@ function genAlbum (results) {
       const img = document.createElement('img');
       img.setAttribute('src', result.image);
       img.setAttribute('alt', result.title);
-      img.setAttribute('height', '200');
+      img.setAttribute('width', '90%');
       const p = document.createElement('p');
       p.innerHTML = result.des;
       const bt1 = document.createElement('button');
@@ -660,6 +672,7 @@ async function genUploadForm () {
     form.setAttribute('action', 'http://127.0.0.1:8090/newpost');
     form.setAttribute('method', 'post');
     form.setAttribute('id', 'newupload');
+    form.setAttribute('enctype','multipart/form-data')
     const in1 = document.createElement('input');
     in1.setAttribute('name', 'title');
     in1.setAttribute('id', 'title');
@@ -708,6 +721,7 @@ async function genUploadForm () {
       const user = document.getElementById('username').textContent;
       const des = document.getElementById('des').value;
       const data = { user: user, title: title, image: image, des: des };
+      console.log(data)
       clearAll();
       const response = await fetch('http://127.0.0.1:8090/newpost'
         , {
@@ -722,6 +736,7 @@ async function genUploadForm () {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         });
+        
         // if no error occurs, show the user a message saying that the post has been uploaded.
       if (response.ok) {
         const main = document.getElementById('jumbo');
@@ -752,111 +767,110 @@ async function genUploadForm () {
         div.append(button2);
         main.append(div);
       } else {
-        // if error occurs, a post with the same title exists. Calls handle error function
         handleError('A post with that title already exists');
     };
     });
 }
 // called when search for a user is pressed on the navbar.
 async function userSearch () {
-  const div = document.getElementById('intro');
-    div.setAttribute('class', 'jumbotron');
-    // generates a search form
-    var uSearch = document.createElement('form');
-    uSearch.setAttribute('id', 'search');
-    uSearch.setAttribute('action', '/searchUser');
-    uSearch.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
-    const i = document.createElement('input');
-    i.setAttribute('class', 'form-control form-control-sm ml-3 w-100');
-    i.setAttribute('name', 'name');
-    i.setAttribute('type', 'text');
-    i.setAttribute('id', 'user');
-    i.setAttribute('placeholder', 'Search For:');
-    const l = document.createElement('label');
-    l.setAttribute('for', 'name');
-    l.innerHTML = 'Enter the name of the user you wish to search for:';
-    const c = document.createElement('center');
-    const b = document.createElement('button');
-    b.setAttribute('type', 'submit');
-    b.setAttribute('class', 'btn btn-primary');
-    b.innerHTML = 'Search';
-    c.append(b);
-    uSearch.append(l);
-    uSearch.append(i);
-    uSearch.append(c);
-    div.append(uSearch);
-    // when search form is submitted
-    uSearch.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      const name = i.value;
-      const resultsDiv = document.getElementById('search_results');
-    clearAll();
-    // if search term is entered
-    if (name) {
-      const response = await fetch('http://127.0.0.1:8090/searchUser?name=' + name);
-      const body = await response.text();
-      const results = JSON.parse(body);
-      results.innerHTML = body;
-      // if no matching results, display a message to the user
-      if (results === undefined || results.length === 0) {
+    const div = document.getElementById('intro');
+      div.setAttribute('class', 'jumbotron');
+      // generates a search form
+      var uSearch = document.createElement('form');
+      uSearch.setAttribute('id', 'search');
+      uSearch.setAttribute('action', '/searchUser');
+      uSearch.setAttribute('class', 'form-inline d-flex justify-content-center md-form form-sm mt-0');
+      const i = document.createElement('input');
+      i.setAttribute('class', 'form-control form-control-sm ml-3 w-100');
+      i.setAttribute('name', 'name');
+      i.setAttribute('type', 'text');
+      i.setAttribute('id', 'user');
+      i.setAttribute('placeholder', 'Search For:');
+      const l = document.createElement('label');
+      l.setAttribute('for', 'name');
+      l.innerHTML = 'Enter the name of the user you wish to search for:';
+      const c = document.createElement('center');
+      const b = document.createElement('button');
+      b.setAttribute('type', 'submit');
+      b.setAttribute('class', 'btn btn-primary');
+      b.innerHTML = 'Search';
+      c.append(b);
+      uSearch.append(l);
+      uSearch.append(i);
+      uSearch.append(c);
+      div.append(uSearch);
+      // when search form is submitted
+      uSearch.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const name = i.value;
         const resultsDiv = document.getElementById('search_results');
+      clearAll();
+      // if search term is entered
+      if (name) {
+        const response = await fetch('http://127.0.0.1:8090/searchUser?name=' + name);
+        const body = await response.text();
+        const results = JSON.parse(body);
+        results.innerHTML = body;
+        // if no matching results, display a message to the user
+        if (results === undefined || results.length === 0) {
+          const resultsDiv = document.getElementById('search_results');
+          resultsDiv.setAttribute('class', 'jumbotron');
+          const message = document.createElement('h4');
+          message.setAttribute('align', 'center');
+          message.innerHTML = 'No matching users';
+          resultsDiv.append(message);
+        } else {
+          // generate a profile for each of the matching users
+          const div = document.getElementById('intro');
+    for (const result of results) {
+      const div4 = document.createElement('div');
+      div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
+      const div5 = document.createElement('div');
+      div5.setAttribute('class', 'card mb-4 box-shadow bg-secondary text-white');
+      const item = document.createElement('h5');
+      const image = document.createElement('img');
+      item.setAttribute('id', result.User);
+      item.setAttribute('align', 'center');
+      item.innerHTML = result.User;
+      image.setAttribute('src', result.pic);
+      image.setAttribute('height', '120px');
+      image.setAttribute('width', '120px');
+      image.setAttribute('align', 'middle');
+      image.setAttribute('class', 'rounded-circle');
+      const centre = document.createElement('center');
+      centre.append(image);
+      div5.append(centre);
+      div5.append(item);
+      // if user clicks on a user, call the view user fuction
+      div5.onclick = function () {
+        var name = item.id;
+        view(name);
+      };
+      div4.append(div5);
+      div.append(div4);
+    }
+        }
+      } else {
+        // if no search term entered, display a message to the user
         resultsDiv.setAttribute('class', 'jumbotron');
         const message = document.createElement('h4');
         message.setAttribute('align', 'center');
-        message.innerHTML = 'No matching users';
+        message.innerHTML = 'No Search Term Entered';
         resultsDiv.append(message);
-      } else {
-        // generate a profile for each of the matching users
-        const div = document.getElementById('intro');
-  for (const result of results) {
-    const div4 = document.createElement('div');
-    div4.setAttribute('class', "'col-sm-12 col-md-6 col-lg-4 col-xl-3'");
-    const div5 = document.createElement('div');
-    div5.setAttribute('class', 'card mb-4 box-shadow bg-secondary text-white');
-    const item = document.createElement('h5');
-    const image = document.createElement('img');
-    item.setAttribute('id', result.User);
-    item.setAttribute('align', 'center');
-    item.innerHTML = result.User;
-    image.setAttribute('src', result.pic);
-    image.setAttribute('height', '120px');
-    image.setAttribute('width', '120px');
-    image.setAttribute('align', 'middle');
-    image.setAttribute('class', 'rounded-circle');
-    const centre = document.createElement('center');
-    centre.append(image);
-    div5.append(centre);
-    div5.append(item);
-    // if user clicks on a user, call the view user fuction
-    div5.onclick = function () {
-      var name = item.id;
-      view(name);
-    };
-    div4.append(div5);
-    div.append(div4);
-  }
       }
-    } else {
-      // if no search term entered, display a message to the user
-      resultsDiv.setAttribute('class', 'jumbotron');
-      const message = document.createElement('h4');
-      message.setAttribute('align', 'center');
-      message.innerHTML = 'No Search Term Entered';
-      resultsDiv.append(message);
-    }
-    // gives the user an option to return to show all postw
-    const button = document.createElement('button');
-    button.setAttribute('type', 'button');
-    button.setAttribute('class', 'btn btn-primary btn-block');
-    button.innerHTML = 'Return to show all posts';
-    resultsDiv.append(button);
-    button.addEventListener('click', async function (event) {
-      event.preventDefault();
-      const response = await fetch('http://127.0.0.1:8090/all');
-      const body = await response.text();
-      const results = JSON.parse(body);
-      results.innerHTML = body;
-      genAlbum(results);
+      // gives the user an option to return to show all postw
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'btn btn-primary btn-block');
+      button.innerHTML = 'Return to show all posts';
+      resultsDiv.append(button);
+      button.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const response = await fetch('http://127.0.0.1:8090/all');
+        const body = await response.text();
+        const results = JSON.parse(body);
+        results.innerHTML = body;
+        genAlbum(results);
     });
   });
 };
