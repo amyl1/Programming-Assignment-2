@@ -8,20 +8,25 @@ window.addEventListener('load', async function () {
   }
 });
 
-var xhttp= new XMLHttpRequest();
-try{
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && xhttp.status == 0) {
-      handleError('Server is not connected. Please refresh the page and try again.');
-    }
-  };
-  xhttp.open("GET", "http://127.0.0.1:8090/", true);
-  xhttp.send();
-}catch(error){
-  handleError(error);
+// called throughout the program. Checks if the server is running, if it is not, displays an error to user.
+function checkServer () {
+  var xhttp = new XMLHttpRequest();
+  try {
+    xhttp.onreadystatechange = function () {
+      if (xhttp.readyState === 4 && xhttp.status === 0) {
+        handleError('Server is not connected. Please refresh the page and try again.');
+      }
+    };
+    xhttp.open('GET', 'http://127.0.0.1:8090/all', true);
+    xhttp.send();
+  } catch (error) {
+    handleError(error);
+  }
 }
+
 // Shows list of all user accounts created so far. Allows user to create a new account. When account selected, calls the login function
 async function userlogin () {
+  checkServer();
   clearAll();
   const response = await fetch('http://127.0.0.1:8090/accounts');
   const body = await response.text();
@@ -40,8 +45,8 @@ async function userlogin () {
     item.setAttribute('align', 'center');
     item.innerHTML = result.User;
     image.setAttribute('src', result.pic);
-    image.setAttribute('height', '120px');
-    image.setAttribute('width', '120px');
+    image.setAttribute('height', '15%');
+    image.setAttribute('width', '15%');
     image.setAttribute('align', 'middle');
     image.setAttribute('class', 'rounded-circle');
     const centre = document.createElement('center');
@@ -128,6 +133,7 @@ async function userlogin () {
 }
 // when user account is selected, put id and pic in nav bar. When logged in, show all posts
 async function login (name) {
+  checkServer();
   navBar();
   const login = document.getElementById('user');
   login.innerHTML = '';
@@ -151,6 +157,7 @@ async function login (name) {
 // This function is use in all the try, catch statements.
 // It displays a message to the user, informing them that an error has occured and what the error was.
 function handleError (error) {
+  checkServer();
   clearAll();
   const resultsDiv = document.getElementById('search_results');
   resultsDiv.setAttribute('class', 'jumbotron');
@@ -166,7 +173,9 @@ function handleError (error) {
   button.innerHTML = 'Return to show all posts';
   resultsDiv.append(message);
   resultsDiv.append(err);
+  if (error !== 'Server is not connected. Please refresh the page and try again.') {
   resultsDiv.append(button);
+  }
   // gives the user an option to return to show all posts when an error has occured
   button.addEventListener('click', async function (event) {
     event.preventDefault();
@@ -205,6 +214,7 @@ function clearAll () {
 // Generate the nav bar which appears once the user has logged in. Also calls the required functions when the user clicks on something on the bar.
 function navBar () {
   // creates navbar and makes responsive to window size.
+  checkServer();
   const nav = document.getElementById('navbar');
   const home = document.createElement('a');
   home.setAttribute('class', 'navbar-brand');
@@ -334,6 +344,7 @@ searchForm.addEventListener('submit', async function (event) {
 // creates album items for the posts returned as the result from app.js
 function genAlbum (results) {
   try {
+    checkServer();
     clearAll();
     const resultsDiv = document.getElementById('search_results');
     // create one div for each item in the result.
@@ -405,6 +416,7 @@ function genAlbum (results) {
 }
 // When view post button is clicked, load post full screen.
 async function viewpost (title) {
+  checkServer();
   clearAll();
   const resultsDiv = document.getElementById('post');
   const response = await fetch('http://127.0.0.1:8090/post?title=' + title);
@@ -492,6 +504,7 @@ async function viewpost (title) {
 }
 // when a user profile is selected from either userSearch or viewAllUsers, show all posts uploaded by that user
 async function view (user) {
+  checkServer();
   const response = await fetch('http://127.0.0.1:8090/viewProfile?name=' + user);
   const body = await response.text();
   const results = JSON.parse(body);
@@ -525,6 +538,7 @@ async function view (user) {
 // Allows the user to add a comment to a post that already exists. Called from comment button when posts are displayed.
 async function comment (title) {
   try {
+    checkServer();
     clearAll();
     const div = document.getElementById('comment');
     div.setAttribute('class', 'jumbotron');
@@ -600,6 +614,7 @@ async function comment (title) {
 // The user can request to delete a post. Authentication is included so that you can only delete posts that you have uploaded. Called from delete button when posts are displayed.
 async function deletepost (title) {
   try {
+    checkServer();
     clearAll();
     // gets the username of the person who is logged in from the profile in the navbar.
     const loggedin = document.getElementById('username').textContent;
@@ -657,6 +672,7 @@ async function deletepost (title) {
 }
 // called from show all posts on navbar. Generates album for all posts in the posts.json file.
 async function showAll () {
+  checkServer();
     const response = await fetch('http://127.0.0.1:8090/all');
     const body = await response.text();
     const results = JSON.parse(body);
@@ -665,6 +681,7 @@ async function showAll () {
 }
 // called from upload new posts on navbar. Authentication to check a post with the same title doesn't already exist.
 async function genUploadForm () {
+  checkServer();
   const uploadDiv = document.getElementById('upload_div');
     const h = document.createElement('h2');
     h.innerHTML = 'Upload New Post';
@@ -672,7 +689,7 @@ async function genUploadForm () {
     form.setAttribute('action', 'http://127.0.0.1:8090/newpost');
     form.setAttribute('method', 'post');
     form.setAttribute('id', 'newupload');
-    form.setAttribute('enctype','multipart/form-data')
+    form.setAttribute('enctype', 'multipart/form-data');
     const in1 = document.createElement('input');
     in1.setAttribute('name', 'title');
     in1.setAttribute('id', 'title');
@@ -721,7 +738,7 @@ async function genUploadForm () {
       const user = document.getElementById('username').textContent;
       const des = document.getElementById('des').value;
       const data = { user: user, title: title, image: image, des: des };
-      console.log(data)
+      console.log(data);
       clearAll();
       const response = await fetch('http://127.0.0.1:8090/newpost'
         , {
@@ -736,7 +753,7 @@ async function genUploadForm () {
           referrer: 'no-referrer',
           body: JSON.stringify(data)
         });
-        
+
         // if no error occurs, show the user a message saying that the post has been uploaded.
       if (response.ok) {
         const main = document.getElementById('jumbo');
@@ -773,6 +790,7 @@ async function genUploadForm () {
 }
 // called when search for a user is pressed on the navbar.
 async function userSearch () {
+  checkServer();
     const div = document.getElementById('intro');
       div.setAttribute('class', 'jumbotron');
       // generates a search form
@@ -833,8 +851,8 @@ async function userSearch () {
       item.setAttribute('align', 'center');
       item.innerHTML = result.User;
       image.setAttribute('src', result.pic);
-      image.setAttribute('height', '120px');
-      image.setAttribute('width', '120px');
+      image.setAttribute('height', '15%');
+      image.setAttribute('width', '15%');
       image.setAttribute('align', 'middle');
       image.setAttribute('class', 'rounded-circle');
       const centre = document.createElement('center');
@@ -876,6 +894,7 @@ async function userSearch () {
 };
 // called when search for a user is pressed on the navbar.
 async function viewAllUsers () {
+  checkServer();
   const response = await fetch('http://127.0.0.1:8090/accounts');
   const body = await response.text();
   const results = JSON.parse(body);
@@ -893,8 +912,8 @@ async function viewAllUsers () {
     item.setAttribute('align', 'center');
     item.innerHTML = result.User;
     image.setAttribute('src', result.pic);
-    image.setAttribute('height', '120px');
-    image.setAttribute('width', '120px');
+    image.setAttribute('height', '15%');
+    image.setAttribute('width', '15%');
     image.setAttribute('align', 'middle');
     image.setAttribute('class', 'rounded-circle');
     const centre = document.createElement('center');
@@ -911,6 +930,7 @@ async function viewAllUsers () {
 }
 // Allows user to search all posts. Called when search form in nav bar is submitted.
 async function searchPosts () {
+  checkServer();
   const keyword = document.getElementById('search_keyword').value;
   const resultsDiv = document.getElementById('search_results');
           resultsDiv.setAttribute('class', 'jumbotron');
