@@ -1,0 +1,44 @@
+{
+  "name": "API",
+  "version": "1.0.0",
+  "description": "\"# Prog2\"",
+  "main": "server.js",
+
+  "scripts": {
+    "test": "jest",
+    "start": "nodemon server.js",
+    "pretest": "eslint app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amyl1/Prog2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amyl1/Prog2/issues"
+  },
+  "homepage": "https://github.com/amyl1/Prog2#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "supertest": "^4.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "formidable": "^1.2.2",
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "sharp": "^0.25.2"
+  },
+  "apidoc": {
+    "title": "API Doc",
+    "url" : "https://api.github.com/v1"
+  }
+}
